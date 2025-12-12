@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import fs from 'fs'
+import path from 'path'
 
 export async function GET() {
   try {
@@ -13,19 +15,38 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const body = await request.json()
+
+  let url = body.url || ''
+  if (body.file) {
+    const base64 = body.file.split(',')[1]
+    const buffer = Buffer.from(base64, 'base64')
+    const ext = body.file.split(';')[0].split('/')[1] || 'png'
+    const filename = `image_${Date.now()}.${ext}`
+    const filepath = path.join(process.cwd(), 'public', filename)
+    fs.writeFileSync(filepath, buffer)
+    url = `/${filename}`
+  }
+
+  if (!url) {
+    return NextResponse.json({ error: 'URL or file required' }, { status: 400 })
+  }
+
+  const alt = body.alt || null
+  const displayOrder = body.displayOrder || 0
+
   try {
-    const body = await request.json()
     const image = await prisma.heroImage.create({
       data: {
-        url: body.url,
-        alt: body.alt,
-        displayOrder: body.displayOrder || 0,
-        isActive: body.isActive ?? true,
+        url,
+        alt,
+        displayOrder,
+        isActive: true,
       },
     })
     return NextResponse.json(image)
   } catch (error) {
-    return NextResponse.json({ error: 'Error creating carousel image' }, { status: 500 })
+    return NextResponse.json({ error: 'Error creating image' }, { status: 500 })
   }
 }
 

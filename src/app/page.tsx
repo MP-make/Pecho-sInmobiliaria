@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 
 async function getProperties() {
   return await prisma.property.findMany({
-    where: { status: 'AVAILABLE' },
+    orderBy: { createdAt: 'desc' },
   });
 }
 
@@ -45,7 +45,7 @@ export default async function Home() {
           </a>
           <a 
             href="#" 
-            className="rounded-full px-8 py-3 bg-[#3B332B] text-white font-sans font-bold uppercase tracking-widest text-sm transition-colors duration-300 hover:bg-[#5A4D41]"
+            className="rounded-none border-2 border-[#3B332B] px-8 py-3 text-sm font-bold uppercase tracking-widest transition-all duration-300 bg-transparent text-[#3B332B] hover:bg-[#3B332B] hover:text-white"
           >
             Reservar
           </a>
@@ -106,7 +106,7 @@ export default async function Home() {
               <label className="font-mono text-xs text-[#2C2621] uppercase tracking-wide">Mensaje (obligatorio)</label>
               <textarea rows={3} className="w-full mt-2 p-3 bg-transparent border border-[#2C2621] rounded-lg focus:outline-none font-mono text-sm text-[#2C2621] resize-none"></textarea>
             </div>
-            <button className="rounded-full px-8 py-3 bg-[#3B332B] text-white font-sans font-bold uppercase tracking-widest text-sm transition-colors duration-300 hover:bg-[#5A4D41]">
+            <button className="rounded-none border-2 border-[#3B332B] px-8 py-3 text-sm font-bold uppercase tracking-widest transition-all duration-300 bg-transparent text-[#3B332B] hover:bg-[#3B332B] hover:text-white">
               Enviar
             </button>
           </div>

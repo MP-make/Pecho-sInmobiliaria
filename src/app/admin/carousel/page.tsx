@@ -15,6 +15,10 @@ export default function AdminCarousel() {
   const [loading, setLoading] = useState(true)
   const [newUrl, setNewUrl] = useState('')
   const [newAlt, setNewAlt] = useState('')
+  const [newFile, setNewFile] = useState<File | null>(null)
+  const [error, setError] = useState('')
+  const [formKey, setFormKey] = useState(0)
+  const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
     fetchImages()
@@ -34,24 +38,69 @@ export default function AdminCarousel() {
 
   async function addImage(e: React.FormEvent) {
     e.preventDefault()
-    if (!newUrl) return
+    if (!newUrl && !newFile) return
 
-    try {
-      const res = await fetch('/api/admin/carousel', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+    setSubmitting(true)
+    setError('')
+
+    if (newFile) {
+      const reader = new FileReader()
+      reader.onload = async () => {
+        const fileData = reader.result as string
+        const data = {
           url: newUrl,
           alt: newAlt,
           displayOrder: images.length,
-        }),
-      })
-      const image = await res.json()
-      setImages([...images, image])
-      setNewUrl('')
-      setNewAlt('')
-    } catch (error) {
-      console.error('Error adding image:', error)
+          file: fileData,
+        }
+        try {
+          const res = await fetch('/api/admin/carousel', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+          })
+          if (!res.ok) {
+            throw new Error('Failed to add image')
+          }
+          const image = await res.json()
+          setImages([...images, image])
+          setNewUrl('')
+          setNewAlt('')
+          setNewFile(null)
+          setFormKey((prev) => prev + 1)
+        } catch (error) {
+          setError('Error adding image. Please try again.')
+        } finally {
+          setSubmitting(false)
+        }
+      }
+      reader.readAsDataURL(newFile)
+    } else {
+      const data = {
+        url: newUrl,
+        alt: newAlt,
+        displayOrder: images.length,
+      }
+      try {
+        const res = await fetch('/api/admin/carousel', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        })
+        if (!res.ok) {
+          throw new Error('Failed to add image')
+        }
+        const image = await res.json()
+        setImages([...images, image])
+        setNewUrl('')
+        setNewAlt('')
+        setNewFile(null)
+        setFormKey((prev) => prev + 1)
+      } catch (error) {
+        setError('Error adding image. Please try again.')
+      } finally {
+        setSubmitting(false)
+      }
     }
   }
 
@@ -77,10 +126,11 @@ export default function AdminCarousel() {
       </h1>
 
       {/* Add New Image Form */}
-      <form onSubmit={addImage} className="bg-white p-6 rounded-lg border border-[#2C2621]/20 mb-8">
+      <form key={formKey} onSubmit={addImage} encType="multipart/form-data" className="bg-white p-6 rounded-lg border border-[#2C2621]/20 mb-8">
         <h2 className="font-sans text-xl font-bold text-[#2C2621] uppercase mb-4">
           Agregar Nueva Imagen
         </h2>
+        {error && <p className="font-mono text-sm text-red-600 mb-4">{error}</p>}
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
             <label className="font-mono text-xs text-[#2C2621] uppercase tracking-wide">URL de la imagen</label>
@@ -89,7 +139,6 @@ export default function AdminCarousel() {
               value={newUrl}
               onChange={(e) => setNewUrl(e.target.value)}
               placeholder="https://..."
-              required
               className="w-full mt-2 p-3 bg-transparent border border-[#2C2621]/20 rounded-lg focus:outline-none focus:border-[#2C2621] font-mono text-sm text-[#2C2621]"
             />
           </div>
@@ -103,12 +152,22 @@ export default function AdminCarousel() {
               className="w-full mt-2 p-3 bg-transparent border border-[#2C2621]/20 rounded-lg focus:outline-none focus:border-[#2C2621] font-mono text-sm text-[#2C2621]"
             />
           </div>
+          <div className="flex-1">
+            <label className="font-mono text-xs text-[#2C2621] uppercase tracking-wide">Archivo de imagen (PNG, JPG, etc.)</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setNewFile(e.target.files?.[0] || null)}
+              className="w-full mt-2 p-3 bg-transparent border border-[#2C2621]/20 rounded-lg focus:outline-none focus:border-[#2C2621] font-mono text-sm text-[#2C2621]"
+            />
+          </div>
           <div className="flex items-end">
             <button
               type="submit"
               className="rounded-full px-8 py-3 bg-[#3B332B] text-white font-sans font-bold uppercase tracking-widest text-sm transition-colors duration-300 hover:bg-[#5A4D41]"
+              disabled={submitting}
             >
-              Agregar
+              {submitting ? 'Agregando...' : 'Agregar'}
             </button>
           </div>
         </div>

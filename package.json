@@ -11,6 +11,8 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.1.0",
     "@prisma/client": "^7.1.0",
+    "@types/formidable": "^3.4.6",
+    "formidable": "^3.5.4",
     "next": "16.0.9",
     "pg": "^8.16.3",
     "prisma": "^7.1.0",

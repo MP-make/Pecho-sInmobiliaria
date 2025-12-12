@@ -43,7 +43,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, reverse = false }
         </ul>
         
         <Link href={`/property/${property.id}`} className="inline-block">
-          <span className="rounded-full px-8 py-3 bg-[#3B332B] text-white font-sans font-bold uppercase tracking-widest text-sm transition-colors duration-300 hover:bg-[#5A4D41] inline-block">
+          <span className="rounded-none border-2 border-[#3B332B] px-8 py-3 text-sm font-bold uppercase tracking-widest transition-all duration-300 bg-transparent text-[#3B332B] hover:bg-[#3B332B] hover:text-white inline-block">
             Ver más
           </span>
         </Link>
