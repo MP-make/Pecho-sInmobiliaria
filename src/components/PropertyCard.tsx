@@ -15,9 +15,9 @@ interface PropertyCardProps {
 
 const PropertyCard: React.FC<PropertyCardProps> = ({ property, reverse = false }) => {
   return (
-    <div className={`flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} min-h-[500px] px-8 md:px-16`}>
+    <div className={`flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} min-h-[400px] sm:min-h-[450px] md:min-h-[500px] px-4 sm:px-8 md:px-16`}>
       {/* Image Section */}
-      <div className="md:w-1/2 h-[300px] md:h-auto">
+      <div className="md:w-1/2 h-[250px] sm:h-[300px] md:h-auto">
         <img 
           src={property.imageUrl || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800'} 
           alt={property.title} 
@@ -26,16 +26,16 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, reverse = false }
       </div>
       
       {/* Content Section */}
-      <div className="md:w-1/2 p-8 md:p-16 flex flex-col justify-center bg-[#F2EFE9]">
-        <h2 className="font-sans text-4xl md:text-5xl lg:text-6xl font-bold text-[#2C2621] uppercase tracking-tight leading-none mb-8">
+      <div className="md:w-1/2 p-6 sm:p-8 md:p-16 flex flex-col justify-center bg-[#F2EFE9]">
+        <h2 className="font-sans text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#2C2621] uppercase tracking-tight leading-none mb-6 sm:mb-8">
           {property.title}
         </h2>
         
-        <p className="font-mono text-sm text-[#2C2621] tracking-wide mb-4">
+        <p className="font-mono text-xs sm:text-sm text-[#2C2621] tracking-wide mb-3 sm:mb-4">
           En nuestra casa contamos con:
         </p>
         
-        <ul className="font-mono text-sm text-[#2C2621] uppercase tracking-wide space-y-2 mb-8">
+        <ul className="font-mono text-xs sm:text-sm text-[#2C2621] uppercase tracking-wide space-y-2 mb-6 sm:mb-8">
           <li>• 3 HABITACIONES</li>
           <li>• 3 BAÑOS</li>
           <li>• 1 SALA COMEDOR</li>
@@ -43,7 +43,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, reverse = false }
         </ul>
         
         <Link href={`/property/${property.id}`} className="inline-block">
-          <span className="rounded-none border-2 border-[#3B332B] px-8 py-3 text-sm font-bold uppercase tracking-widest transition-all duration-300 bg-transparent text-[#3B332B] hover:bg-[#3B332B] hover:text-white inline-block">
+          <span className="rounded-none border-2 border-[#3B332B] px-6 sm:px-8 py-2 sm:py-3 text-xs sm:text-sm font-bold uppercase tracking-widest transition-all duration-300 bg-transparent text-[#3B332B] hover:bg-[#3B332B] hover:text-white inline-block">
             Ver más
           </span>
         </Link>

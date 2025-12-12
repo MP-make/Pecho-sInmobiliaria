@@ -52,19 +52,19 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F2EFE9] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#F2EFE9] flex items-center justify-center px-4 py-8">
       <div className="max-w-md w-full">
-        <div className="bg-white border-2 border-[#2C2621]/20 p-8 rounded-lg shadow-2xl">
-          <div className="text-center mb-8">
-            <h1 className="font-sans text-3xl font-bold text-[#2C2621] uppercase tracking-tight mb-2">
+        <div className="bg-white border-2 border-[#2C2621]/20 p-6 sm:p-8 rounded-lg shadow-2xl">
+          <div className="text-center mb-6 sm:mb-8">
+            <h1 className="font-sans text-2xl sm:text-3xl font-bold text-[#2C2621] uppercase tracking-tight mb-2">
               Panel Admin
             </h1>
-            <p className="font-mono text-sm text-[#2C2621]/60 uppercase tracking-wide">
+            <p className="font-mono text-xs sm:text-sm text-[#2C2621]/60 uppercase tracking-wide">
               Inmobiliaria Pecho's
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             <div>
               <label className="font-mono text-xs text-[#2C2621]/60 uppercase tracking-wide block mb-2">
                 Correo electrónico
@@ -102,17 +102,17 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-none border-2 border-[#3B332B] px-6 py-3 text-sm font-bold uppercase tracking-widest transition-all duration-300 bg-[#3B332B] text-white hover:bg-[#5A4D41] disabled:opacity-50"
+              className="w-full rounded-none border-2 border-[#3B332B] px-6 py-2 sm:py-3 text-xs sm:text-sm font-bold uppercase tracking-widest transition-all duration-300 bg-[#3B332B] text-white hover:bg-[#5A4D41] disabled:opacity-50"
             >
               {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
             </button>
           </form>
         </div>
 
-        <div className="mt-6 text-center">
+        <div className="mt-4 sm:mt-6 text-center">
           <a
             href="/"
-            className="font-mono text-sm text-[#2C2621]/60 hover:text-[#2C2621] uppercase tracking-wide underline"
+            className="font-mono text-xs sm:text-sm text-[#2C2621]/60 hover:text-[#2C2621] uppercase tracking-wide underline"
           >
             ← Volver al sitio
           </a>

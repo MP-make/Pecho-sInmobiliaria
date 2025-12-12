@@ -60,37 +60,37 @@ export default function LeadsPage() {
 
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="mb-8">
-        <h1 className="font-sans text-4xl font-bold text-[#2C2621] uppercase tracking-tight mb-2">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="font-sans text-2xl sm:text-3xl md:text-4xl font-bold text-[#2C2621] uppercase tracking-tight mb-2">
           Mensajes de Contacto
         </h1>
-        <p className="font-mono text-sm text-[#2C2621]/60 uppercase tracking-wide">
+        <p className="font-mono text-xs sm:text-sm text-[#2C2621]/60 uppercase tracking-wide">
           {leads.length} mensaje{leads.length !== 1 ? 's' : ''} recibido{leads.length !== 1 ? 's' : ''}
         </p>
       </div>
 
       {leads.length === 0 ? (
-        <div className="bg-white border-2 border-[#2C2621]/20 p-12 rounded-lg text-center">
-          <p className="font-mono text-[#2C2621]/60 uppercase tracking-wide">
+        <div className="bg-white border-2 border-[#2C2621]/20 p-8 sm:p-12 rounded-lg text-center">
+          <p className="font-mono text-sm sm:text-base text-[#2C2621]/60 uppercase tracking-wide">
             No hay mensajes aún
           </p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {leads.map((lead) => (
-            <div key={lead.id} className="bg-white border-2 border-[#2C2621]/20 p-6 rounded-lg">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="font-sans text-xl font-bold text-[#2C2621] uppercase tracking-tight mb-1">
+            <div key={lead.id} className="bg-white border-2 border-[#2C2621]/20 p-4 sm:p-6 rounded-lg">
+              <div className="flex justify-between items-start mb-3 sm:mb-4">
+                <div className="flex-1 pr-2">
+                  <h3 className="font-sans text-lg sm:text-xl font-bold text-[#2C2621] uppercase tracking-tight mb-1">
                     {lead.name}
                   </h3>
-                  <p className="font-mono text-sm text-[#2C2621]/60 uppercase tracking-wide">
+                  <p className="font-mono text-xs sm:text-sm text-[#2C2621]/60 uppercase tracking-wide break-words">
                     Propiedad: {lead.property.title}
                   </p>
                 </div>
                 <button
                   onClick={() => handleDelete(lead.id)}
-                  className="text-red-500 hover:text-red-700 transition-colors p-2"
+                  className="text-red-500 hover:text-red-700 transition-colors p-2 flex-shrink-0"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="3 6 5 6 21 6"></polyline>
@@ -99,12 +99,12 @@ export default function LeadsPage() {
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
                 <div>
                   <label className="font-mono text-xs text-[#2C2621]/60 uppercase tracking-wide block mb-1">
                     Email
                   </label>
-                  <a href={`mailto:${lead.email}`} className="font-mono text-sm text-[#2C2621] hover:underline">
+                  <a href={`mailto:${lead.email}`} className="font-mono text-xs sm:text-sm text-[#2C2621] hover:underline break-all">
                     {lead.email}
                   </a>
                 </div>
@@ -113,7 +113,7 @@ export default function LeadsPage() {
                     <label className="font-mono text-xs text-[#2C2621]/60 uppercase tracking-wide block mb-1">
                       Teléfono
                     </label>
-                    <a href={`tel:${lead.phone}`} className="font-mono text-sm text-[#2C2621] hover:underline">
+                    <a href={`tel:${lead.phone}`} className="font-mono text-xs sm:text-sm text-[#2C2621] hover:underline">
                       {lead.phone}
                     </a>
                   </div>
@@ -121,13 +121,13 @@ export default function LeadsPage() {
               </div>
 
               {(lead.checkIn || lead.checkOut) && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
                   {lead.checkIn && (
                     <div>
                       <label className="font-mono text-xs text-[#2C2621]/60 uppercase tracking-wide block mb-1">
                         Check-in
                       </label>
-                      <p className="font-mono text-sm text-[#2C2621]">
+                      <p className="font-mono text-xs sm:text-sm text-[#2C2621]">
                         {new Date(lead.checkIn).toLocaleDateString('es-PE')}
                       </p>
                     </div>
@@ -137,7 +137,7 @@ export default function LeadsPage() {
                       <label className="font-mono text-xs text-[#2C2621]/60 uppercase tracking-wide block mb-1">
                         Check-out
                       </label>
-                      <p className="font-mono text-sm text-[#2C2621]">
+                      <p className="font-mono text-xs sm:text-sm text-[#2C2621]">
                         {new Date(lead.checkOut).toLocaleDateString('es-PE')}
                       </p>
                     </div>
@@ -146,18 +146,18 @@ export default function LeadsPage() {
               )}
 
               {lead.message && (
-                <div className="mb-4">
+                <div className="mb-3 sm:mb-4">
                   <label className="font-mono text-xs text-[#2C2621]/60 uppercase tracking-wide block mb-1">
                     Mensaje
                   </label>
-                  <p className="font-mono text-sm text-[#2C2621] bg-[#F2EFE9] p-3 rounded">
+                  <p className="font-mono text-xs sm:text-sm text-[#2C2621] bg-[#F2EFE9] p-3 rounded break-words">
                     {lead.message}
                   </p>
                 </div>
               )}
 
               <div className="text-right">
-                <span className="font-mono text-xs text-[#2C2621]/60 uppercase tracking-wide">
+                <span className="font-mono text-[10px] sm:text-xs text-[#2C2621]/60 uppercase tracking-wide">
                   {new Date(lead.createdAt).toLocaleString('es-PE')}
                 </span>
               </div>
