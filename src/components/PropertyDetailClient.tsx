@@ -15,6 +15,8 @@ interface Property {
   bedrooms?: number | null;
   bathrooms?: number | null;
   address?: string | null;
+  mapUrl?: string | null;
+  whatsappNumber?: string | null;
   amenities: { id: string; name: string }[];
   propertyImages: { id: string; url: string; isCover: boolean }[];
 }
@@ -44,8 +46,11 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
     setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
   };
 
-  const phoneNumber = '51907326121';
+  const phoneNumber = property.whatsappNumber || '51907326121';
   const isDaily = rentalType === 'DAILY';
+  
+  // Calcular el precio según el tipo de alquiler
+  const currentPrice = isDaily ? property.price : (property.pricePerMonth || property.price);
   const priceLabel = isDaily ? '/ noche' : '/ mes';
 
   const handleRentalTypeChange = (type: 'DAILY' | 'MONTHLY') => {
@@ -235,7 +240,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
               <div className="mb-6">
                 <div className="flex items-baseline gap-2 mb-1">
                   <span className="font-mono text-4xl font-bold text-[#2C2621]">
-                    S/ {property.price.toLocaleString()}
+                    S/ {currentPrice.toLocaleString()}
                   </span>
                   <span className="font-mono text-base text-[#2C2621]/60">
                     {priceLabel}
@@ -392,6 +397,41 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                 <p className="font-mono text-sm text-[#2C2621] leading-relaxed bg-white p-6 rounded-lg border border-[#2C2621]/10">
                   {property.description}
                 </p>
+              </div>
+            )}
+
+            {/* Google Maps */}
+            {property.mapUrl && (
+              <div>
+                <h2 className="font-sans text-2xl font-bold text-[#2C2621] uppercase tracking-tight mb-6 border-b-2 border-[#2C2621]/20 pb-4">
+                  Ubicación
+                </h2>
+                <div className="bg-white p-6 rounded-lg border border-[#2C2621]/10">
+                  <iframe
+                    src={property.mapUrl}
+                    width="100%"
+                    height="450"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    className="rounded-lg"
+                  ></iframe>
+                  <div className="mt-4 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <a 
+                      href={property.mapUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="font-mono text-sm text-[#2C2621] hover:underline uppercase tracking-wide"
+                    >
+                      Ver en Google Maps
+                    </a>
+                  </div>
+                </div>
               </div>
             )}
           </div>

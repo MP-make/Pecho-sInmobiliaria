@@ -41,8 +41,8 @@ export async function PUT(
       bedrooms: body.bedrooms,
       bathrooms: body.bathrooms,
       address: body.address,
-      mapLat: body.mapLat,
-      mapLng: body.mapLng,
+      mapUrl: body.mapUrl,
+      whatsappNumber: body.whatsappNumber,
     }
     
     // Add rentalType if provided

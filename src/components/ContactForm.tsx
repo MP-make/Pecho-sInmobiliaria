@@ -43,11 +43,12 @@ export default function ContactForm({ propertyId, propertyTitle }: ContactFormPr
         </div>
         <div>
           <label className="font-mono text-xs text-[#2C2621]/60 uppercase tracking-wide block mb-2">
-            Teléfono
+            Teléfono (obligatorio)
           </label>
           <input 
             type="tel" 
             name="phone" 
+            required
             placeholder="Teléfono"
             className="w-full p-2 bg-transparent border-b border-[#2C2621]/30 focus:outline-none focus:border-[#2C2621] font-mono text-sm text-[#2C2621] placeholder:text-[#2C2621]/40 transition-colors" 
           />

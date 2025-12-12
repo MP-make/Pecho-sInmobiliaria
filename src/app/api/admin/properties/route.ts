@@ -28,8 +28,8 @@ export async function POST(request: Request) {
   const bedrooms = body.bedrooms
   const bathrooms = body.bathrooms
   const address = body.address
-  const mapLat = body.mapLat
-  const mapLng = body.mapLng
+  const mapUrl = body.mapUrl
+  const whatsappNumber = body.whatsappNumber
 
   try {
     const property = await prisma.property.create({
@@ -44,8 +44,8 @@ export async function POST(request: Request) {
         bedrooms,
         bathrooms,
         address,
-        mapLat,
-        mapLng,
+        mapUrl,
+        whatsappNumber,
       },
     })
 

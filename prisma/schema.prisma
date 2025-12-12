@@ -21,6 +21,8 @@ model Property {
   address       String?        @map("address")
   mapLat        Float?         @map("mapLat")
   mapLng        Float?         @map("mapLng")
+  mapUrl        String?        @map("mapUrl")
+  whatsappNumber String?       @map("whatsappNumber")
   amenities     Amenity[]
   leads         Lead[]
   propertyImages PropertyImage[]
@@ -142,6 +144,18 @@ model HeroImage {
   createdAt    DateTime @default(now())
 
   @@map("HeroImage")
+}
+
+model AdminUser {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("AdminUser")
 }
 
 enum lead_status {
