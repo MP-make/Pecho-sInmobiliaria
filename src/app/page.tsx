@@ -22,7 +22,7 @@ async function getHeroImages() {
     ];
   }
   
-  return images.map(img => img.url);
+  return images.map((img: any) => img.url);
 }
 
 export default async function Home() {

@@ -15,7 +15,7 @@ interface PropertyCardProps {
 
 const PropertyCard: React.FC<PropertyCardProps> = ({ property, reverse = false }) => {
   return (
-    <div className={`flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} min-h-[500px]`}>
+    <div className={`flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} min-h-[500px] px-8 md:px-16`}>
       {/* Image Section */}
       <div className="md:w-1/2 h-[300px] md:h-auto">
         <img 
