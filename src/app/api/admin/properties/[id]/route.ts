@@ -88,7 +88,8 @@ export async function PUT(
     return NextResponse.json(property)
   } catch (error) {
     console.log('Error in PUT:', error)
-    return NextResponse.json({ error: `Error updating property: ${error.message}` }, { status: 500 })
+    const message = error instanceof Error ? error.message : 'Unknown error'
+    return NextResponse.json({ error: `Error updating property: ${message}` }, { status: 500 })
   }
 }
 

@@ -40,7 +40,7 @@ export default function PropertyForm({ propertyId }: PropertyFormProps) {
         description: data.description || '',
         status: data.status,
       })
-      setImages(data.propertyImages ? data.propertyImages.map(img => ({ url: img.url, file: null, alt: img.alt_text || '' })) : [])
+      setImages(data.propertyImages ? data.propertyImages.map((img: any) => ({ url: img.url, file: null, alt: img.alt_text || '' })) : [])
     } catch (error) {
       console.error('Error fetching property:', error)
     }
@@ -62,7 +62,7 @@ export default function PropertyForm({ propertyId }: PropertyFormProps) {
             file = await new Promise<string>((resolve) => {
               const reader = new FileReader()
               reader.onload = () => resolve(reader.result as string)
-              reader.readAsDataURL(img.file)
+              reader.readAsDataURL(img.file!)
             })
           }
           return { url: img.url, alt: img.alt, file }
@@ -84,7 +84,7 @@ export default function PropertyForm({ propertyId }: PropertyFormProps) {
             file = await new Promise<string>((resolve) => {
               const reader = new FileReader()
               reader.onload = () => resolve(reader.result as string)
-              reader.readAsDataURL(img.file)
+              reader.readAsDataURL(img.file!)
             })
           }
           return { url: img.url, alt: img.alt, file }
