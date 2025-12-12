@@ -65,7 +65,7 @@ export default async function Home() {
       <section className="py-16">
         <div className="space-y-0">
           {properties.length > 0 ? (
-            properties.map((p, index) => (
+            properties.map((p: any, index) => (
               <PropertyCard key={p.id} property={p} reverse={index % 2 === 1} />
             ))
           ) : (
