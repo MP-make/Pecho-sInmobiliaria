@@ -27,77 +27,90 @@ export default function ContactForm({ propertyId, propertyTitle }: ContactFormPr
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="flex gap-4">
-        <div className="flex-1">
-          <label className="font-mono text-xs text-[#2C2621] uppercase tracking-wide">Nombre (obligatorio)</label>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="font-mono text-xs text-[#2C2621]/60 uppercase tracking-wide block mb-2">
+            Nombre (obligatorio)
+          </label>
           <input 
             type="text" 
             name="name" 
             required 
             placeholder="Nombre"
-            className="w-full mt-1 p-3 bg-transparent border-b border-[#2C2621] focus:outline-none font-mono text-sm text-[#2C2621] placeholder:text-[#2C2621]/50" 
+            className="w-full p-2 bg-transparent border-b border-[#2C2621]/30 focus:outline-none focus:border-[#2C2621] font-mono text-sm text-[#2C2621] placeholder:text-[#2C2621]/40 transition-colors" 
           />
         </div>
-        <div className="flex-1">
-          <label className="font-mono text-xs text-[#2C2621] uppercase tracking-wide">Teléfono</label>
+        <div>
+          <label className="font-mono text-xs text-[#2C2621]/60 uppercase tracking-wide block mb-2">
+            Teléfono
+          </label>
           <input 
             type="tel" 
             name="phone" 
             placeholder="Teléfono"
-            className="w-full mt-1 p-3 bg-transparent border-b border-[#2C2621] focus:outline-none font-mono text-sm text-[#2C2621] placeholder:text-[#2C2621]/50" 
+            className="w-full p-2 bg-transparent border-b border-[#2C2621]/30 focus:outline-none focus:border-[#2C2621] font-mono text-sm text-[#2C2621] placeholder:text-[#2C2621]/40 transition-colors" 
           />
         </div>
       </div>
       
       <div>
-        <label className="font-mono text-xs text-[#2C2621] uppercase tracking-wide">Correo electrónico (obligatorio)</label>
+        <label className="font-mono text-xs text-[#2C2621]/60 uppercase tracking-wide block mb-2">
+          Correo electrónico (obligatorio)
+        </label>
         <input 
           type="email" 
           name="email" 
           required 
-          className="w-full mt-1 p-3 bg-transparent border-b border-[#2C2621] focus:outline-none font-mono text-sm text-[#2C2621]" 
+          className="w-full p-2 bg-transparent border-b border-[#2C2621]/30 focus:outline-none focus:border-[#2C2621] font-mono text-sm text-[#2C2621] transition-colors" 
         />
       </div>
 
-      <div className="flex gap-4">
-        <div className="flex-1">
-          <label className="font-mono text-xs text-[#2C2621] uppercase tracking-wide">Check-in</label>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="font-mono text-xs text-[#2C2621]/60 uppercase tracking-wide block mb-2">
+            Check-in
+          </label>
           <input 
             type="date" 
             name="checkIn" 
-            className="w-full mt-1 p-3 bg-transparent border-b border-[#2C2621] focus:outline-none font-mono text-sm text-[#2C2621]" 
+            className="w-full p-2 bg-transparent border-b border-[#2C2621]/30 focus:outline-none focus:border-[#2C2621] font-mono text-sm text-[#2C2621] transition-colors" 
           />
         </div>
-        <div className="flex-1">
-          <label className="font-mono text-xs text-[#2C2621] uppercase tracking-wide">Check-out</label>
+        <div>
+          <label className="font-mono text-xs text-[#2C2621]/60 uppercase tracking-wide block mb-2">
+            Check-out
+          </label>
           <input 
             type="date" 
             name="checkOut" 
-            className="w-full mt-1 p-3 bg-transparent border-b border-[#2C2621] focus:outline-none font-mono text-sm text-[#2C2621]" 
+            className="w-full p-2 bg-transparent border-b border-[#2C2621]/30 focus:outline-none focus:border-[#2C2621] font-mono text-sm text-[#2C2621] transition-colors" 
           />
         </div>
       </div>
       
       <div>
-        <label className="font-mono text-xs text-[#2C2621] uppercase tracking-wide">Mensaje (obligatorio)</label>
+        <label className="font-mono text-xs text-[#2C2621]/60 uppercase tracking-wide block mb-2">
+          Mensaje (obligatorio)
+        </label>
         <textarea 
           name="message" 
-          rows={3} 
-          className="w-full mt-1 p-3 bg-transparent border border-[#2C2621] rounded-lg focus:outline-none font-mono text-sm text-[#2C2621] resize-none"
+          rows={4} 
+          required
+          className="w-full p-3 bg-transparent border border-[#2C2621]/30 focus:outline-none focus:border-[#2C2621] font-mono text-sm text-[#2C2621] resize-none transition-colors"
         ></textarea>
       </div>
       
       <button 
         type="submit" 
         disabled={isPending} 
-        className="px-8 py-3 bg-transparent border border-[#2C2621] text-[#2C2621] font-mono text-sm uppercase tracking-wide hover:bg-[#2C2621] hover:text-[#F2EFE9] transition disabled:opacity-50"
+        className="w-full px-8 py-3 bg-transparent border-2 border-[#2C2621] text-[#2C2621] font-mono text-sm uppercase tracking-widest hover:bg-[#2C2621] hover:text-[#F2EFE9] transition-all duration-300 disabled:opacity-50"
       >
         {isPending ? 'Enviando...' : 'Enviar'}
       </button>
       
       {message && (
-        <p className={`font-mono text-sm ${message.includes('Error') ? 'text-red-600' : 'text-green-600'}`}>
+        <p className={`font-mono text-sm text-center ${message.includes('Error') ? 'text-red-600' : 'text-green-600'}`}>
           {message}
         </p>
       )}

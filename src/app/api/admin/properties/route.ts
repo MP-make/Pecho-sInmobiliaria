@@ -20,16 +20,32 @@ export async function POST(request: Request) {
 
   const title = body.title
   const price = body.price
+  const pricePerMonth = body.pricePerMonth
   const description = body.description
   const status = body.status
+  const rentalType = body.rentalType || 'DAILY'
+  const maxGuests = body.maxGuests
+  const bedrooms = body.bedrooms
+  const bathrooms = body.bathrooms
+  const address = body.address
+  const mapLat = body.mapLat
+  const mapLng = body.mapLng
 
   try {
     const property = await prisma.property.create({
       data: {
         title,
         price,
+        pricePerMonth,
         description,
         status,
+        rentalType,
+        maxGuests,
+        bedrooms,
+        bathrooms,
+        address,
+        mapLat,
+        mapLng,
       },
     })
 
