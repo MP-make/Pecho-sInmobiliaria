@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { revalidatePath } from 'next/cache'
 import formidable from 'formidable'
 import fs from 'fs'
 import path from 'path'
@@ -82,6 +83,9 @@ export async function POST(request: Request) {
         data: { imageUrl: firstImageUrl },
       })
     }
+
+    // Revalidar la página principal para mostrar la nueva propiedad
+    revalidatePath('/')
 
     return NextResponse.json(property)
   } catch (error) {

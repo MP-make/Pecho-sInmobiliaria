@@ -1,6 +1,10 @@
 import HomeClient from '@/components/HomeClient';
 import { prisma } from '@/lib/prisma';
 
+// Deshabilitar caché para obtener datos frescos siempre
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function getProperties() {
   return await prisma.property.findMany({
     orderBy: { createdAt: 'desc' },

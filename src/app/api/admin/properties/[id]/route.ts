@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { revalidatePath } from 'next/cache'
 import fs from 'fs'
 import path from 'path'
 
@@ -131,6 +132,9 @@ export async function PUT(
       },
     })
 
+    // Revalidar la página principal para mostrar los cambios
+    revalidatePath('/')
+
     return NextResponse.json(updatedProperty)
   } catch (error) {
     console.error('Error in PUT:', error)
@@ -148,6 +152,10 @@ export async function DELETE(
     await prisma.property.delete({
       where: { id },
     })
+    
+    // Revalidar la página principal para mostrar que se eliminó
+    revalidatePath('/')
+    
     return NextResponse.json({ success: true })
   } catch (error) {
     return NextResponse.json({ error: 'Error deleting property' }, { status: 500 })

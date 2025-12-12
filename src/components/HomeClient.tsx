@@ -12,6 +12,14 @@ interface HomeClientProps {
 
 export default function HomeClient({ properties, heroImages }: HomeClientProps) {
   const [language, setLanguage] = useState('es')
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    message: ''
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
 
   // Cargar idioma del localStorage al montar
   useEffect(() => {
@@ -25,6 +33,40 @@ export default function HomeClient({ properties, heroImages }: HomeClientProps) 
     localStorage.setItem('language', lang)
   }
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    setSubmitStatus('idle')
+
+    try {
+      const response = await fetch('/api/admin/leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: `${formData.firstName} ${formData.lastName}`.trim(),
+          email: formData.email,
+          message: formData.message,
+          propertyId: null,
+          status: 'NEW'
+        }),
+      })
+
+      if (response.ok) {
+        setSubmitStatus('success')
+        setFormData({ firstName: '', lastName: '', email: '', message: '' })
+        setTimeout(() => setSubmitStatus('idle'), 5000)
+      } else {
+        setSubmitStatus('error')
+      }
+    } catch (error) {
+      setSubmitStatus('error')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   const translations = {
     es: {
       heroTitle1: 'Alquiler de Casas en',
@@ -36,7 +78,10 @@ export default function HomeClient({ properties, heroImages }: HomeClientProps) 
       lastNamePlaceholder: 'Apellido',
       emailLabel: 'Correo electrónico (obligatorio)',
       messageLabel: 'Mensaje (obligatorio)',
-      submitButton: 'Enviar'
+      submitButton: 'Enviar',
+      sending: 'Enviando...',
+      successMessage: '¡Mensaje enviado! Te contactaremos pronto.',
+      errorMessage: 'Error al enviar. Intenta nuevamente.'
     },
     en: {
       heroTitle1: 'House Rentals in',
@@ -48,7 +93,10 @@ export default function HomeClient({ properties, heroImages }: HomeClientProps) 
       lastNamePlaceholder: 'Last Name',
       emailLabel: 'Email (required)',
       messageLabel: 'Message (required)',
-      submitButton: 'Send'
+      submitButton: 'Send',
+      sending: 'Sending...',
+      successMessage: 'Message sent! We will contact you soon.',
+      errorMessage: 'Error sending. Please try again.'
     }
   }
 
@@ -94,29 +142,66 @@ export default function HomeClient({ properties, heroImages }: HomeClientProps) 
               {t.contactSubtitle}
             </p>
           </div>
-          <div className="md:w-1/2 space-y-4 sm:space-y-6">
+          <form onSubmit={handleSubmit} className="md:w-1/2 space-y-4 sm:space-y-6">
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="flex-1">
                 <label className="font-mono text-xs text-[#2C2621] uppercase tracking-wide">{t.nameLabel}</label>
-                <input type="text" placeholder={t.nameLabel.split(' (')[0]} className="w-full mt-2 p-3 bg-transparent border-b border-[#2C2621] focus:outline-none font-mono text-sm text-[#2C2621] placeholder:text-[#2C2621]/50" />
+                <input 
+                  type="text" 
+                  placeholder={t.nameLabel.split(' (')[0]} 
+                  value={formData.firstName}
+                  onChange={(e) => setFormData({...formData, firstName: e.target.value})}
+                  required
+                  className="w-full mt-2 p-3 bg-transparent border-b border-[#2C2621] focus:outline-none font-mono text-sm text-[#2C2621] placeholder:text-[#2C2621]/50" 
+                />
               </div>
               <div className="flex-1">
                 <label className="font-mono text-xs text-[#2C2621] uppercase tracking-wide">&nbsp;</label>
-                <input type="text" placeholder={t.lastNamePlaceholder} className="w-full mt-2 p-3 bg-transparent border-b border-[#2C2621] focus:outline-none font-mono text-sm text-[#2C2621] placeholder:text-[#2C2621]/50" />
+                <input 
+                  type="text" 
+                  placeholder={t.lastNamePlaceholder} 
+                  value={formData.lastName}
+                  onChange={(e) => setFormData({...formData, lastName: e.target.value})}
+                  className="w-full mt-2 p-3 bg-transparent border-b border-[#2C2621] focus:outline-none font-mono text-sm text-[#2C2621] placeholder:text-[#2C2621]/50" 
+                />
               </div>
             </div>
             <div>
               <label className="font-mono text-xs text-[#2C2621] uppercase tracking-wide">{t.emailLabel}</label>
-              <input type="email" className="w-full mt-2 p-3 bg-transparent border-b border-[#2C2621] focus:outline-none font-mono text-sm text-[#2C2621]" />
+              <input 
+                type="email" 
+                value={formData.email}
+                onChange={(e) => setFormData({...formData, email: e.target.value})}
+                required
+                className="w-full mt-2 p-3 bg-transparent border-b border-[#2C2621] focus:outline-none font-mono text-sm text-[#2C2621]" 
+              />
             </div>
             <div>
               <label className="font-mono text-xs text-[#2C2621] uppercase tracking-wide">{t.messageLabel}</label>
-              <textarea rows={3} className="w-full mt-2 p-3 bg-transparent border border-[#2C2621] rounded-lg focus:outline-none font-mono text-sm text-[#2C2621] resize-none"></textarea>
+              <textarea 
+                rows={3} 
+                value={formData.message}
+                onChange={(e) => setFormData({...formData, message: e.target.value})}
+                required
+                className="w-full mt-2 p-3 bg-transparent border border-[#2C2621] rounded-lg focus:outline-none font-mono text-sm text-[#2C2621] resize-none"
+              ></textarea>
             </div>
-            <button className="rounded-none border-2 border-[#3B332B] px-8 py-3 text-sm font-bold uppercase tracking-widest transition-all duration-300 bg-transparent text-[#3B332B] hover:bg-[#3B332B] hover:text-white">
-              {t.submitButton}
+            
+            {submitStatus === 'success' && (
+              <p className="font-mono text-xs text-green-700 uppercase tracking-wide">{t.successMessage}</p>
+            )}
+            {submitStatus === 'error' && (
+              <p className="font-mono text-xs text-red-700 uppercase tracking-wide">{t.errorMessage}</p>
+            )}
+            
+            <button 
+              type="submit"
+              disabled={isSubmitting}
+              className="rounded-none border-2 border-[#3B332B] px-8 py-3 text-sm font-bold uppercase tracking-widest transition-all duration-300 bg-transparent text-[#3B332B] hover:bg-[#3B332B] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? t.sending : t.submitButton}
             </button>
-          </div>
+          </form>
         </div>
       </section>
     </div>

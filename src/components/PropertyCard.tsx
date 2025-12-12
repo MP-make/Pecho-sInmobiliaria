@@ -39,7 +39,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, reverse = false, 
   return (
     <div className={`flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} min-h-[400px] sm:min-h-[450px] md:min-h-[500px] px-4 sm:px-8 md:px-16`}>
       {/* Image Section */}
-      <div className="md:w-1/2 h-[250px] sm:h-[300px] md:h-auto">
+      <div className="md:w-1/2 h-[300px] sm:h-[350px] md:h-[500px]">
         <img 
           src={property.imageUrl || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800'} 
           alt={property.title} 
@@ -49,7 +49,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, reverse = false, 
       
       {/* Content Section */}
       <div className="md:w-1/2 p-6 sm:p-8 md:p-16 flex flex-col justify-center bg-[#F2EFE9]">
-        <h2 className="font-sans text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#2C2621] uppercase tracking-tight leading-none mb-6 sm:mb-8">
+        <h2 className="font-sans text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#2C2621] uppercase tracking-tight leading-none mb-6 sm:mb-8 break-words">
           {property.title}
         </h2>
         

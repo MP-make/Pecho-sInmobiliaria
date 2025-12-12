@@ -74,7 +74,7 @@ export default function AdminLoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                placeholder="mp@mp.com"
+                placeholder="correo@ejemplo.com"
                 className="w-full p-3 bg-white border-2 border-[#2C2621]/20 rounded-lg font-mono text-sm text-[#2C2621] focus:outline-none focus:border-[#2C2621]"
               />
             </div>

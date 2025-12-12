@@ -131,6 +131,39 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
     setIsDropdownOpen(false);
   };
 
+  // Función para convertir la URL de Google Maps a formato embed
+  const getEmbedMapUrl = (mapUrl: string | null) => {
+    if (!mapUrl) return null;
+    
+    // Si ya es una URL de embed, devolverla tal cual
+    if (mapUrl.includes('maps/embed')) {
+      return mapUrl;
+    }
+    
+    // Extraer coordenadas si la URL las contiene
+    const coordsMatch = mapUrl.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (coordsMatch) {
+      const lat = coordsMatch[1];
+      const lng = coordsMatch[2];
+      return `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${lat},${lng}&zoom=15`;
+    }
+    
+    // Si es una URL normal de Google Maps, intentar convertirla
+    if (mapUrl.includes('google.com/maps')) {
+      // Extraer el query de búsqueda si existe
+      const placeMatch = mapUrl.match(/place\/([^\/]+)/);
+      if (placeMatch) {
+        const place = decodeURIComponent(placeMatch[1]);
+        return `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(place)}&zoom=15`;
+      }
+    }
+    
+    // Si no se puede procesar, devolver una ubicación por defecto (Pisco, Perú)
+    return `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=Pisco,Peru&zoom=13`;
+  };
+
+  const embedMapUrl = getEmbedMapUrl(property.mapUrl);
+
   return (
     <div className="min-h-screen bg-[#F2EFE9]">
       {/* Main Content */}
@@ -471,7 +504,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                 </h2>
                 <div className="bg-white p-4 sm:p-6 rounded-lg border border-[#2C2621]/10">
                   <iframe
-                    src={property.mapUrl}
+                    src={embedMapUrl}
                     width="100%"
                     height="350"
                     style={{ border: 0 }}
@@ -505,7 +538,12 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
               <h3 className="font-sans text-lg sm:text-xl font-bold text-[#2C2621] uppercase tracking-tight mb-4 sm:mb-6">
                 {t.requestInfo}
               </h3>
-              <ContactForm propertyId={property.id} propertyTitle={property.title} />
+              <ContactForm 
+                propertyId={property.id} 
+                propertyTitle={property.title} 
+                rentalType={rentalType}
+                whatsappNumber={property.whatsappNumber}
+              />
             </div>
           </div>
         </div>

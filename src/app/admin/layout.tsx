@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { useState } from 'react'
 
 export default function AdminLayout({
@@ -10,11 +10,19 @@ export default function AdminLayout({
   children: React.ReactNode
 }) {
   const router = useRouter()
+  const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  
+  // No mostrar header en la página de login
+  const isLoginPage = pathname === '/admin/login'
 
   async function handleLogout() {
     await fetch('/api/auth/logout', { method: 'POST' })
     router.push('/admin/login')
+  }
+
+  if (isLoginPage) {
+    return <>{children}</>
   }
 
   return (
