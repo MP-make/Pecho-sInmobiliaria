@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ContactForm from '@/components/ContactForm';
 
 interface Property {
@@ -32,6 +32,80 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
     (property.rentalType as 'DAILY' | 'MONTHLY') || 'DAILY'
   );
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [language, setLanguage] = useState('es');
+
+  // Cargar idioma del localStorage al montar
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem('language') || 'es'
+    setLanguage(savedLanguage)
+  }, [])
+
+  const translations = {
+    es: {
+      back: 'Volver',
+      dailyRental: 'Por días',
+      monthlyRental: 'Por meses',
+      shortTerm: 'Corto plazo / Vacacional',
+      mediumTerm: 'Temporada / Medio plazo',
+      dailyInfo: 'Alquiler por días: Estancias breves (días/semanas), flexible y más caro por día. Ideal para turistas o necesidades puntuales, con gestión intensiva y regulaciones turísticas.',
+      monthlyInfo: 'Alquiler por meses: Estancias más largas (32 días a 11 meses). Para estudios o trabajo, ofrece ingresos más estables y menos gestión. Se rige por leyes de alquiler temporal, no habitual.',
+      viewAllPhotos: 'Ver todas las fotos',
+      perNight: '/ noche',
+      perMonth: '/ mes',
+      greatPrice: '✓ Muy buen precio',
+      checkIn: 'Entrada',
+      checkOut: 'Salida',
+      maxCapacity: 'Capacidad máxima',
+      guests: 'huéspedes',
+      checkAvailability: 'Consultar disponibilidad',
+      bedroom: 'dormitorio',
+      bedrooms: 'dormitorios',
+      bathroom: 'baño',
+      bathrooms: 'baños',
+      reserveNow: 'Reserva ahora',
+      matchPrice: 'Igualamos el precio',
+      callUs: 'o llámanos al: +51 907 326 121',
+      noChargeYet: 'No se hará ningún cargo todavía',
+      ourHouse: 'En nuestra casa contamos con:',
+      aboutPlace: 'Sobre este alojamiento',
+      location: 'Ubicación',
+      viewOnMaps: 'Ver en Google Maps',
+      requestInfo: 'Solicitar información'
+    },
+    en: {
+      back: 'Back',
+      dailyRental: 'By days',
+      monthlyRental: 'By months',
+      shortTerm: 'Short term / Vacation',
+      mediumTerm: 'Season / Medium term',
+      dailyInfo: 'Daily rental: Brief stays (days/weeks), flexible and more expensive per day. Ideal for tourists or specific needs, with intensive management and tourism regulations.',
+      monthlyInfo: 'Monthly rental: Longer stays (32 days to 11 months). For studies or work, offers more stable income and less management. Governed by temporary rental laws, not habitual.',
+      viewAllPhotos: 'View all photos',
+      perNight: '/ night',
+      perMonth: '/ month',
+      greatPrice: '✓ Great price',
+      checkIn: 'Check-in',
+      checkOut: 'Check-out',
+      maxCapacity: 'Max capacity',
+      guests: 'guests',
+      checkAvailability: 'Check availability',
+      bedroom: 'bedroom',
+      bedrooms: 'bedrooms',
+      bathroom: 'bathroom',
+      bathrooms: 'bathrooms',
+      reserveNow: 'Reserve now',
+      matchPrice: 'We match the price',
+      callUs: 'or call us: +51 907 326 121',
+      noChargeYet: 'No charge will be made yet',
+      ourHouse: 'Our house features:',
+      aboutPlace: 'About this place',
+      location: 'Location',
+      viewOnMaps: 'View on Google Maps',
+      requestInfo: 'Request information'
+    }
+  }
+
+  const t = translations[language as keyof typeof translations]
 
   const coverImage = property.propertyImages.find(img => img.isCover)?.url || property.imageUrl || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600';
   const allImages = property.propertyImages.length > 0 
@@ -49,9 +123,8 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
   const phoneNumber = property.whatsappNumber || '51907326121';
   const isDaily = rentalType === 'DAILY';
   
-  // Calcular el precio según el tipo de alquiler
   const currentPrice = isDaily ? property.price : (property.pricePerMonth || property.price);
-  const priceLabel = isDaily ? '/ noche' : '/ mes';
+  const priceLabel = isDaily ? t.perNight : t.perMonth;
 
   const handleRentalTypeChange = (type: 'DAILY' | 'MONTHLY') => {
     setRentalType(type);
@@ -83,10 +156,10 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
               >
                 <div className="text-left">
                   <div className="font-sans text-xs sm:text-sm font-bold uppercase tracking-wide text-[#2C2621]">
-                    {isDaily ? 'Por días' : 'Por meses'}
+                    {isDaily ? t.dailyRental : t.monthlyRental}
                   </div>
                   <div className="font-mono text-[10px] sm:text-xs text-[#2C2621]/60">
-                    {isDaily ? 'Corto plazo / Vacacional' : 'Temporada / Medio plazo'}
+                    {isDaily ? t.shortTerm : t.mediumTerm}
                   </div>
                 </div>
                 <svg 
@@ -115,10 +188,10 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                     }`}
                   >
                     <div className="font-sans text-sm font-bold uppercase tracking-wide text-[#2C2621]">
-                      Por días
+                      {t.dailyRental}
                     </div>
                     <div className="font-mono text-xs text-[#2C2621]/60">
-                      Corto plazo / Vacacional
+                      {t.shortTerm}
                     </div>
                   </button>
                   <button
@@ -128,10 +201,10 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                     }`}
                   >
                     <div className="font-sans text-sm font-bold uppercase tracking-wide text-[#2C2621]">
-                      Por meses
+                      {t.monthlyRental}
                     </div>
                     <div className="font-mono text-xs text-[#2C2621]/60">
-                      Temporada / Medio plazo
+                      {t.mediumTerm}
                     </div>
                   </button>
                 </div>
@@ -141,9 +214,9 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
             {/* Volver Button */}
             <a 
               href="/" 
-              className="rounded-none border-2 border-[#2C2621] px-6 sm:px-8 py-3 text-xs sm:text-sm font-bold uppercase tracking-widest transition-all duration-300 bg-transparent text-[#2C2621] hover:bg-[#2C2621] hover:text-[#F2EFE9] whitespace-nowrap h-auto sm:h-[60px] flex items-center justify-center"
+              className="rounded-none border-2 border-[#3B332B] px-6 sm:px-8 py-3 text-xs sm:text-sm font-bold uppercase tracking-widest transition-all duration-300 bg-transparent text-[#3B332B] hover:bg-[#3B332B] hover:text-white whitespace-nowrap h-auto sm:h-[60px] flex items-center justify-center"
             >
-              Volver
+              {t.back}
             </a>
           </div>
         </div>
@@ -151,23 +224,13 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
         {/* Info text about rental type */}
         <div className="mb-4 sm:mb-6 bg-white border border-[#2C2621]/10 p-3 sm:p-4 rounded-lg">
           <p className="font-mono text-[10px] sm:text-xs text-[#2C2621]/70 leading-relaxed">
-            {isDaily ? (
-              <>
-                <strong>Alquiler por días:</strong> Estancias breves (días/semanas), flexible y más caro por día. 
-                Ideal para turistas o necesidades puntuales, con gestión intensiva y regulaciones turísticas.
-              </>
-            ) : (
-              <>
-                <strong>Alquiler por meses:</strong> Estancias más largas (32 días a 11 meses). 
-                Para estudios o trabajo, ofrece ingresos más estables y menos gestión. Se rige por leyes de alquiler temporal, no habitual.
-              </>
-            )}
+            <strong>{isDaily ? t.dailyRental : t.monthlyRental}:</strong> {isDaily ? t.dailyInfo : t.monthlyInfo}
           </p>
         </div>
 
         {/* Images and Booking Card Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-          {/* Left: Image Carousel - Takes 2 columns */}
+          {/* Left: Image Carousel */}
           <div className="lg:col-span-2">
             <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] bg-[#2C2621]/5 rounded-lg overflow-hidden">
               <img 
@@ -208,7 +271,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                 onClick={() => setShowAllPhotos(true)}
                 className="absolute bottom-4 right-4 z-10 px-4 py-2 bg-white border-2 border-[#2C2621] text-[#2C2621] font-mono text-xs uppercase tracking-widest hover:bg-[#2C2621] hover:text-white transition-all duration-300"
               >
-                Ver todas las fotos
+                {t.viewAllPhotos}
               </button>
             </div>
 
@@ -234,7 +297,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
             )}
           </div>
 
-          {/* Right: Booking Card - Takes 1 column */}
+          {/* Right: Booking Card */}
           <div className="lg:col-span-1">
             <div className="lg:sticky lg:top-8 bg-white border-2 border-[#2C2621]/20 p-4 sm:p-6 rounded-lg shadow-lg">
               <div className="mb-4 sm:mb-6">
@@ -247,7 +310,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                   </span>
                 </div>
                 <p className="font-mono text-xs text-green-600 uppercase tracking-wide">
-                  ✓ Muy buen precio
+                  {t.greatPrice}
                 </p>
               </div>
 
@@ -256,7 +319,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                 <div className="grid grid-cols-2 gap-3">
                   <div className="border-2 border-[#2C2621]/30 p-3 rounded">
                     <label className="font-mono text-xs text-[#2C2621]/60 uppercase tracking-wide block mb-1">
-                      Entrada
+                      {t.checkIn}
                     </label>
                     <input 
                       type="date"
@@ -265,7 +328,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                   </div>
                   <div className="border-2 border-[#2C2621]/30 p-3 rounded">
                     <label className="font-mono text-xs text-[#2C2621]/60 uppercase tracking-wide block mb-1">
-                      Salida
+                      {t.checkOut}
                     </label>
                     <input 
                       type="date"
@@ -277,7 +340,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                 {/* Static guest info */}
                 <div className="border-2 border-[#2C2621]/30 p-3 rounded bg-[#F2EFE9]/30">
                   <label className="font-mono text-xs text-[#2C2621]/60 uppercase tracking-wide block mb-1">
-                    Capacidad máxima
+                    {t.maxCapacity}
                   </label>
                   <div className="flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -287,7 +350,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                       <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                     </svg>
                     <span className="font-mono text-sm font-bold text-[#2C2621]">
-                      {property.maxGuests ? `${property.maxGuests} huéspedes` : 'Consultar disponibilidad'}
+                      {property.maxGuests ? `${property.maxGuests} ${t.guests}` : t.checkAvailability}
                     </span>
                   </div>
                 </div>
@@ -304,7 +367,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                           <path d="M6 8V4"></path>
                         </svg>
                         <span className="font-mono text-xs text-[#2C2621]">
-                          {property.bedrooms} {property.bedrooms === 1 ? 'dormitorio' : 'dormitorios'}
+                          {property.bedrooms} {property.bedrooms === 1 ? t.bedroom : t.bedrooms}
                         </span>
                       </div>
                     )}
@@ -318,7 +381,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                           <line x1="17" x2="17" y1="19" y2="21"></line>
                         </svg>
                         <span className="font-mono text-xs text-[#2C2621]">
-                          {property.bathrooms} {property.bathrooms === 1 ? 'baño' : 'baños'}
+                          {property.bathrooms} {property.bathrooms === 1 ? t.bathroom : t.bathrooms}
                         </span>
                       </div>
                     )}
@@ -328,12 +391,12 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
 
               {/* Reserve Button */}
               <button className="w-full rounded-none border-2 border-[#3B332B] px-4 sm:px-6 py-2 sm:py-3 font-sans font-bold uppercase tracking-widest text-xs sm:text-sm transition-all duration-300 bg-[#3B332B] text-white hover:bg-transparent hover:text-[#3B332B] mb-3">
-                Reserva ahora
+                {t.reserveNow}
               </button>
 
               {/* WhatsApp Button */}
               <a
-                href={`https://wa.me/${phoneNumber}?text=Hola, estoy interesado en la propiedad: ${encodeURIComponent(property.title)} - Tipo de alquiler: ${isDaily ? 'Por días' : 'Por meses'}`}
+                href={`https://wa.me/${phoneNumber}?text=${language === 'es' ? 'Hola, estoy interesado en la propiedad' : 'Hello, I am interested in the property'}: ${encodeURIComponent(property.title)} - ${language === 'es' ? 'Tipo de alquiler' : 'Rental type'}: ${isDaily ? t.dailyRental : t.monthlyRental}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full flex items-center justify-center gap-2 sm:gap-3 bg-[#25D366] text-white px-4 sm:px-6 py-2 sm:py-3 rounded-none font-sans font-bold uppercase tracking-widest text-xs sm:text-sm hover:bg-[#128C7E] transition-all duration-300 mb-3"
@@ -341,15 +404,15 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
                 </svg>
-                Igualamos el precio
+                {t.matchPrice}
               </a>
 
               <p className="font-mono text-[10px] sm:text-xs text-[#2C2621]/50 text-center uppercase tracking-wide mb-3">
-                o llámanos al: +51 907 326 121
+                {t.callUs}
               </p>
 
               <p className="font-mono text-[10px] sm:text-xs text-[#2C2621]/60 text-center">
-                No se hará ningún cargo todavía
+                {t.noChargeYet}
               </p>
             </div>
           </div>
@@ -361,7 +424,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
             {/* Características */}
             <div>
               <h2 className="font-sans text-xl sm:text-2xl font-bold text-[#2C2621] uppercase tracking-tight mb-4 sm:mb-6 border-b-2 border-[#2C2621]/20 pb-3 sm:pb-4">
-                En nuestra casa contamos con:
+                {t.ourHouse}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {property.amenities.length > 0 ? (
@@ -392,7 +455,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
             {property.description && (
               <div>
                 <h2 className="font-sans text-xl sm:text-2xl font-bold text-[#2C2621] uppercase tracking-tight mb-4 sm:mb-6 border-b-2 border-[#2C2621]/20 pb-3 sm:pb-4">
-                  Sobre este alojamiento
+                  {t.aboutPlace}
                 </h2>
                 <p className="font-mono text-xs sm:text-sm text-[#2C2621] leading-relaxed bg-white p-4 sm:p-6 rounded-lg border border-[#2C2621]/10">
                   {property.description}
@@ -404,7 +467,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
             {property.mapUrl && (
               <div>
                 <h2 className="font-sans text-xl sm:text-2xl font-bold text-[#2C2621] uppercase tracking-tight mb-4 sm:mb-6 border-b-2 border-[#2C2621]/20 pb-3 sm:pb-4">
-                  Ubicación
+                  {t.location}
                 </h2>
                 <div className="bg-white p-4 sm:p-6 rounded-lg border border-[#2C2621]/10">
                   <iframe
@@ -428,7 +491,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                       rel="noopener noreferrer"
                       className="font-mono text-sm text-[#2C2621] hover:underline uppercase tracking-wide"
                     >
-                      Ver en Google Maps
+                      {t.viewOnMaps}
                     </a>
                   </div>
                 </div>
@@ -440,7 +503,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
           <div className="lg:col-span-1">
             <div className="bg-white border-2 border-[#2C2621]/20 p-4 sm:p-6 rounded-lg shadow-lg">
               <h3 className="font-sans text-lg sm:text-xl font-bold text-[#2C2621] uppercase tracking-tight mb-4 sm:mb-6">
-                Solicitar información
+                {t.requestInfo}
               </h3>
               <ContactForm propertyId={property.id} propertyTitle={property.title} />
             </div>
@@ -507,7 +570,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
 
       {/* Floating WhatsApp Button - Solo móvil */}
       <a
-        href={`https://wa.me/${phoneNumber}?text=Hola, estoy interesado en la propiedad: ${encodeURIComponent(property.title)} - Tipo de alquiler: ${isDaily ? 'Por días' : 'Por meses'}`}
+        href={`https://wa.me/${phoneNumber}?text=${language === 'es' ? 'Hola, estoy interesado en la propiedad' : 'Hello, I am interested in the property'}: ${encodeURIComponent(property.title)} - ${language === 'es' ? 'Tipo de alquiler' : 'Rental type'}: ${isDaily ? t.dailyRental : t.monthlyRental}`}
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-6 right-6 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:bg-[#128C7E] hover:scale-110 transition-all duration-300 z-40 lg:hidden"

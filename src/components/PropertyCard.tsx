@@ -11,9 +11,31 @@ interface Property {
 interface PropertyCardProps {
   property: Property;
   reverse?: boolean;
+  language?: string;
 }
 
-const PropertyCard: React.FC<PropertyCardProps> = ({ property, reverse = false }) => {
+const PropertyCard: React.FC<PropertyCardProps> = ({ property, reverse = false, language = 'es' }) => {
+  const translations = {
+    es: {
+      viewMore: 'Ver más',
+      ourHouse: 'En nuestra casa contamos con:',
+      bedrooms: 'HABITACIONES',
+      bathrooms: 'BAÑOS',
+      livingRoom: 'SALA COMEDOR',
+      park: 'UBICADO FRENTE A UN PARQUE PARA NIÑOS'
+    },
+    en: {
+      viewMore: 'View more',
+      ourHouse: 'Our house features:',
+      bedrooms: 'BEDROOMS',
+      bathrooms: 'BATHROOMS',
+      livingRoom: 'LIVING ROOM',
+      park: 'LOCATED IN FRONT OF A CHILDREN\'S PARK'
+    }
+  }
+
+  const t = translations[language as keyof typeof translations]
+
   return (
     <div className={`flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} min-h-[400px] sm:min-h-[450px] md:min-h-[500px] px-4 sm:px-8 md:px-16`}>
       {/* Image Section */}
@@ -32,19 +54,19 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, reverse = false }
         </h2>
         
         <p className="font-mono text-xs sm:text-sm text-[#2C2621] tracking-wide mb-3 sm:mb-4">
-          En nuestra casa contamos con:
+          {t.ourHouse}
         </p>
         
         <ul className="font-mono text-xs sm:text-sm text-[#2C2621] uppercase tracking-wide space-y-2 mb-6 sm:mb-8">
-          <li>• 3 HABITACIONES</li>
-          <li>• 3 BAÑOS</li>
-          <li>• 1 SALA COMEDOR</li>
-          <li>• UBICADO FRENTE A UN PARQUE PARA NIÑOS</li>
+          <li>• 3 {t.bedrooms}</li>
+          <li>• 3 {t.bathrooms}</li>
+          <li>• 1 {t.livingRoom}</li>
+          <li>• {t.park}</li>
         </ul>
         
         <Link href={`/property/${property.id}`} className="inline-block">
           <span className="rounded-none border-2 border-[#3B332B] px-6 sm:px-8 py-2 sm:py-3 text-xs sm:text-sm font-bold uppercase tracking-widest transition-all duration-300 bg-transparent text-[#3B332B] hover:bg-[#3B332B] hover:text-white inline-block">
-            Ver más
+            {t.viewMore}
           </span>
         </Link>
       </div>
