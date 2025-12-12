@@ -132,8 +132,8 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
   };
 
   // Función para convertir la URL de Google Maps a formato embed
-  const getEmbedMapUrl = (mapUrl: string | null) => {
-    if (!mapUrl) return null;
+  const getEmbedMapUrl = (mapUrl: string | null | undefined): string | undefined => {
+    if (!mapUrl) return undefined;
     
     // Si ya es una URL de embed, devolverla tal cual
     if (mapUrl.includes('maps/embed')) {
@@ -479,7 +479,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                       <div className="w-2 h-2 bg-[#2C2621] rounded-full flex-shrink-0"></div>
                       <span className="font-mono text-sm text-[#2C2621] uppercase tracking-wide">2 Baños</span>
                     </div>
-                  </>
+                   </>
                 )}
               </div>
             </div>
@@ -519,7 +519,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                       <circle cx="12" cy="10" r="3"></circle>
                     </svg>
                     <a 
-                      href={property.mapUrl} 
+                      href={embedMapUrl || property.mapUrl || 'https://www.google.com/maps/place/Pisco,Peru'} 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="font-mono text-sm text-[#2C2621] hover:underline uppercase tracking-wide"
