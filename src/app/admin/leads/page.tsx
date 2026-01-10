@@ -11,10 +11,10 @@ interface Lead {
   checkIn?: string
   checkOut?: string
   createdAt: string
-  property: {
+  property?: {
     id: string
     title: string
-  }
+  } | null
 }
 
 export default function LeadsPage() {
@@ -85,7 +85,7 @@ export default function LeadsPage() {
                     {lead.name}
                   </h3>
                   <p className="font-mono text-xs sm:text-sm text-[#2C2621]/60 uppercase tracking-wide break-words">
-                    Propiedad: {lead.property.title}
+                    {lead.property ? `Propiedad: ${lead.property.title}` : 'Consulta general'}
                   </p>
                 </div>
                 <button

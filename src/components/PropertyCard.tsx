@@ -1,11 +1,18 @@
 import Link from 'next/link';
 
+interface Amenity {
+  id: string;
+  name: string;
+}
+
 interface Property {
   id: string;
   title: string;
+  slug?: string;
   price: number;
   imageUrl: string | null;
   description?: string | null;
+  amenities?: Amenity[];
 }
 
 interface PropertyCardProps {
@@ -19,18 +26,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, reverse = false, 
     es: {
       viewMore: 'Ver más',
       ourHouse: 'En nuestra casa contamos con:',
-      bedrooms: 'HABITACIONES',
-      bathrooms: 'BAÑOS',
-      livingRoom: 'SALA COMEDOR',
-      park: 'UBICADO FRENTE A UN PARQUE PARA NIÑOS'
+      noAmenities: 'Consultar características'
     },
     en: {
       viewMore: 'View more',
       ourHouse: 'Our house features:',
-      bedrooms: 'BEDROOMS',
-      bathrooms: 'BATHROOMS',
-      livingRoom: 'LIVING ROOM',
-      park: 'LOCATED IN FRONT OF A CHILDREN\'S PARK'
+      noAmenities: 'Check features'
     }
   }
 
@@ -58,13 +59,16 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, reverse = false, 
         </p>
         
         <ul className="font-mono text-xs sm:text-sm text-[#2C2621] uppercase tracking-wide space-y-2 mb-6 sm:mb-8">
-          <li>• 3 {t.bedrooms}</li>
-          <li>• 3 {t.bathrooms}</li>
-          <li>• 1 {t.livingRoom}</li>
-          <li>• {t.park}</li>
+          {property.amenities && property.amenities.length > 0 ? (
+            property.amenities.slice(0, 4).map((amenity) => (
+              <li key={amenity.id}>• {amenity.name}</li>
+            ))
+          ) : (
+            <li>• {t.noAmenities}</li>
+          )}
         </ul>
         
-        <Link href={`/property/${property.id}`} className="inline-block">
+        <Link href={`/property/${property.slug || property.id}`} className="inline-block">
           <span className="rounded-none border-2 border-[#3B332B] px-6 sm:px-8 py-2 sm:py-3 text-xs sm:text-sm font-bold uppercase tracking-widest transition-all duration-300 bg-transparent text-[#3B332B] hover:bg-[#3B332B] hover:text-white inline-block">
             {t.viewMore}
           </span>

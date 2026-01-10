@@ -58,7 +58,13 @@ export default function ContactForm({ propertyId, propertyTitle, rentalType = 'D
   }
 
   const handleWhatsAppClick = () => {
-    const phoneNum = whatsappNumber || '51907326121'
+    // Limpiar el número de WhatsApp (quitar espacios, +, guiones, paréntesis)
+    const cleanPhone = (phone: string | null | undefined): string => {
+      if (!phone) return '51907326121';
+      return phone.replace(/[\s\-\+\(\)]/g, '');
+    };
+    
+    const phoneNum = cleanPhone(whatsappNumber);
     const rentalTypeText = formData.rentalType === 'DAILY' ? 'Por días' : 'Por meses'
     const checkInText = formData.checkIn ? `\nCheck-in: ${formData.checkIn}` : ''
     const checkOutText = formData.checkOut ? `\nCheck-out: ${formData.checkOut}` : ''
@@ -127,10 +133,10 @@ export default function ContactForm({ propertyId, propertyTitle, rentalType = 'D
         </select>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className={`grid ${formData.rentalType === 'MONTHLY' ? 'grid-cols-1' : 'grid-cols-2'} gap-4`}>
         <div>
           <label className="font-mono text-xs text-[#2C2621]/60 uppercase tracking-wide block mb-2">
-            Check-in (opcional)
+            {formData.rentalType === 'MONTHLY' ? 'Fecha de inicio (opcional)' : 'Check-in (opcional)'}
           </label>
           <input 
             type="date"
@@ -139,17 +145,19 @@ export default function ContactForm({ propertyId, propertyTitle, rentalType = 'D
             className="w-full p-2 bg-transparent border-b border-[#2C2621]/30 focus:outline-none focus:border-[#2C2621] font-mono text-sm text-[#2C2621] transition-colors" 
           />
         </div>
-        <div>
-          <label className="font-mono text-xs text-[#2C2621]/60 uppercase tracking-wide block mb-2">
-            Check-out (opcional)
-          </label>
-          <input 
-            type="date"
-            value={formData.checkOut}
-            onChange={(e) => setFormData({...formData, checkOut: e.target.value})}
-            className="w-full p-2 bg-transparent border-b border-[#2C2621]/30 focus:outline-none focus:border-[#2C2621] font-mono text-sm text-[#2C2621] transition-colors" 
-          />
-        </div>
+        {formData.rentalType !== 'MONTHLY' && (
+          <div>
+            <label className="font-mono text-xs text-[#2C2621]/60 uppercase tracking-wide block mb-2">
+              Check-out (opcional)
+            </label>
+            <input 
+              type="date"
+              value={formData.checkOut}
+              onChange={(e) => setFormData({...formData, checkOut: e.target.value})}
+              className="w-full p-2 bg-transparent border-b border-[#2C2621]/30 focus:outline-none focus:border-[#2C2621] font-mono text-sm text-[#2C2621] transition-colors" 
+            />
+          </div>
+        )}
       </div>
       
       <div>

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { generateUniqueSlug } from '@/lib/slug'
 import { revalidatePath } from 'next/cache'
 import formidable from 'formidable'
 import fs from 'fs'
@@ -31,11 +32,16 @@ export async function POST(request: Request) {
   const address = body.address
   const mapUrl = body.mapUrl
   const whatsappNumber = body.whatsappNumber
+  const amenities = body.amenities || []
 
   try {
+    // Generar slug único
+    const slug = await generateUniqueSlug(title)
+
     const property = await prisma.property.create({
       data: {
         title,
+        slug,
         price,
         pricePerMonth,
         description,
@@ -49,6 +55,20 @@ export async function POST(request: Request) {
         whatsappNumber,
       },
     })
+
+    // Crear amenities
+    if (amenities.length > 0) {
+      for (const amenityName of amenities) {
+        if (amenityName && amenityName.trim()) {
+          await prisma.amenity.create({
+            data: {
+              name: amenityName.trim(),
+              propertyId: property.id,
+            },
+          })
+        }
+      }
+    }
 
     let firstImageUrl = ''
     if (body.images && body.images.length > 0) {
@@ -89,6 +109,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(property)
   } catch (error) {
+    console.error('Error creating property:', error)
     return NextResponse.json({ error: 'Error creating property' }, { status: 500 })
   }
 }

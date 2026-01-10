@@ -103,6 +103,7 @@ export default function PropertyForm({ propertyId }: PropertyFormProps) {
         bedrooms: formData.bedrooms ? parseInt(formData.bedrooms) : null,
         bathrooms: formData.bathrooms ? parseInt(formData.bathrooms) : null,
         images: processedImages,
+        amenities: amenities,
       }
 
       const res = await fetch(url, {
@@ -360,9 +361,15 @@ export default function PropertyForm({ propertyId }: PropertyFormProps) {
                   onChange={(e) => setFormData({ ...formData, rentalType: e.target.value })}
                   className="w-full p-2 sm:p-3 bg-white border-2 border-[#2C2621]/20 rounded-lg font-mono text-xs sm:text-sm text-[#2C2621] focus:outline-none focus:border-[#2C2621]"
                 >
-                  <option value="DAILY">Por días</option>
-                  <option value="MONTHLY">Por meses</option>
+                  <option value="DAILY">Solo por días</option>
+                  <option value="MONTHLY">Solo por meses</option>
+                  <option value="BOTH">Ambos (días y meses)</option>
                 </select>
+                <p className="mt-1 font-mono text-[10px] text-[#2C2621]/50">
+                  {formData.rentalType === 'DAILY' && 'La propiedad solo se alquilará por días/noches'}
+                  {formData.rentalType === 'MONTHLY' && 'La propiedad solo se alquilará por meses'}
+                  {formData.rentalType === 'BOTH' && 'La propiedad se puede alquilar por días o por meses'}
+                </p>
               </div>
 
               <div className="grid grid-cols-3 gap-2 sm:gap-3">

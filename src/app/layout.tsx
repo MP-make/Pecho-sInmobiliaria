@@ -13,8 +13,13 @@ const robotoMono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Inmolibiaria Platform",
-  description: "Real estate platform for property cataloging and lead capture",
+  title: "Pecho's Inmobiliaria - Alquiler de Casas en Pisco",
+  description: "Encuentra tu casa ideal en Pisco, Perú. Alquiler por días y meses.",
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({

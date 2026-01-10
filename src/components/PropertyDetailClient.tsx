@@ -28,11 +28,28 @@ interface PropertyDetailClientProps {
 export default function PropertyDetailClient({ property }: PropertyDetailClientProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showAllPhotos, setShowAllPhotos] = useState(false);
-  const [rentalType, setRentalType] = useState<'DAILY' | 'MONTHLY'>(
-    (property.rentalType as 'DAILY' | 'MONTHLY') || 'DAILY'
-  );
+  
+  // Determinar el tipo de alquiler inicial basado en la configuración de la propiedad
+  const getInitialRentalType = (): 'DAILY' | 'MONTHLY' => {
+    if (property.rentalType === 'MONTHLY') return 'MONTHLY';
+    if (property.rentalType === 'DAILY') return 'DAILY';
+    return 'DAILY'; // Por defecto para 'BOTH'
+  };
+  
+  const [rentalType, setRentalType] = useState<'DAILY' | 'MONTHLY'>(getInitialRentalType());
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [language, setLanguage] = useState('es');
+
+  // Determinar si mostrar el dropdown de tipo de alquiler
+  const showRentalTypeDropdown = property.rentalType === 'BOTH' || !property.rentalType;
+
+  // Función para hacer scroll al formulario de contacto
+  const scrollToContactForm = () => {
+    const contactForm = document.getElementById('contact-form-section');
+    if (contactForm) {
+      contactForm.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   // Cargar idioma del localStorage al montar
   useEffect(() => {
@@ -48,7 +65,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
       shortTerm: 'Corto plazo / Vacacional',
       mediumTerm: 'Temporada / Medio plazo',
       dailyInfo: 'Alquiler por días: Estancias breves (días/semanas), flexible y más caro por día. Ideal para turistas o necesidades puntuales, con gestión intensiva y regulaciones turísticas.',
-      monthlyInfo: 'Alquiler por meses: Estancias más largas (32 días a 11 meses). Para estudios o trabajo, ofrece ingresos más estables y menos gestión. Se rige por leyes de alquiler temporal, no habitual.',
+      monthlyInfo: 'Alquiler por meses: Estancias más largas (32 días a 11 meses). Para estudios o trabajo, ofrece ingresos más stables y menos gestión. Se rige por leyes de alquiler temporal, no habitual.',
       viewAllPhotos: 'Ver todas las fotos',
       perNight: '/ noche',
       perMonth: '/ mes',
@@ -120,7 +137,13 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
     setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
   };
 
-  const phoneNumber = property.whatsappNumber || '51907326121';
+  // Limpiar el número de WhatsApp (quitar espacios, +, guiones, paréntesis)
+  const cleanPhoneNumber = (phone: string | null | undefined): string => {
+    if (!phone) return '51907326121';
+    return phone.replace(/[\s\-\+\(\)]/g, '');
+  };
+
+  const phoneNumber = cleanPhoneNumber(property.whatsappNumber);
   const isDaily = rentalType === 'DAILY';
   
   const currentPrice = isDaily ? property.price : (property.pricePerMonth || property.price);
@@ -182,67 +205,69 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
           {/* Right Controls: Rental Type Dropdown + Volver Button */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             {/* Rental Type Dropdown */}
-            <div className="relative">
-              <button
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="flex items-center justify-between gap-2 sm:gap-4 px-4 sm:px-6 py-3 border-2 border-[#2C2621] bg-white hover:bg-[#2C2621]/5 transition-all duration-300 w-full sm:min-w-[240px]"
-              >
-                <div className="text-left">
-                  <div className="font-sans text-xs sm:text-sm font-bold uppercase tracking-wide text-[#2C2621]">
-                    {isDaily ? t.dailyRental : t.monthlyRental}
-                  </div>
-                  <div className="font-mono text-[10px] sm:text-xs text-[#2C2621]/60">
-                    {isDaily ? t.shortTerm : t.mediumTerm}
-                  </div>
-                </div>
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  width="20" 
-                  height="20" 
-                  viewBox="0 0 24 24" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  strokeWidth="2" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round"
-                  className={`transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`}
+            {showRentalTypeDropdown && (
+              <div className="relative">
+                <button
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="flex items-center justify-between gap-2 sm:gap-4 px-4 sm:px-6 py-3 border-2 border-[#2C2621] bg-white hover:bg-[#2C2621]/5 transition-all duration-300 w-full sm:min-w-[240px]"
                 >
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </button>
-              
-              {/* Dropdown Menu */}
-              {isDropdownOpen && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-[#2C2621] shadow-lg z-20">
-                  <button
-                    onClick={() => handleRentalTypeChange('DAILY')}
-                    className={`w-full px-6 py-3 text-left hover:bg-[#2C2621]/10 transition-colors duration-200 ${
-                      isDaily ? 'bg-[#2C2621]/5' : ''
-                    }`}
+                  <div className="text-left">
+                    <div className="font-sans text-xs sm:text-sm font-bold uppercase tracking-wide text-[#2C2621]">
+                      {isDaily ? t.dailyRental : t.monthlyRental}
+                    </div>
+                    <div className="font-mono text-[10px] sm:text-xs text-[#2C2621]/60">
+                      {isDaily ? t.shortTerm : t.mediumTerm}
+                    </div>
+                  </div>
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    width="20" 
+                    height="20" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="2" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round"
+                    className={`transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`}
                   >
-                    <div className="font-sans text-sm font-bold uppercase tracking-wide text-[#2C2621]">
-                      {t.dailyRental}
-                    </div>
-                    <div className="font-mono text-xs text-[#2C2621]/60">
-                      {t.shortTerm}
-                    </div>
-                  </button>
-                  <button
-                    onClick={() => handleRentalTypeChange('MONTHLY')}
-                    className={`w-full px-6 py-3 text-left hover:bg-[#2C2621]/10 transition-colors duration-200 border-t border-[#2C2621]/20 ${
-                      !isDaily ? 'bg-[#2C2621]/5' : ''
-                    }`}
-                  >
-                    <div className="font-sans text-sm font-bold uppercase tracking-wide text-[#2C2621]">
-                      {t.monthlyRental}
-                    </div>
-                    <div className="font-mono text-xs text-[#2C2621]/60">
-                      {t.mediumTerm}
-                    </div>
-                  </button>
-                </div>
-              )}
-            </div>
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </button>
+                
+                {/* Dropdown Menu */}
+                {isDropdownOpen && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-[#2C2621] shadow-lg z-20">
+                    <button
+                      onClick={() => handleRentalTypeChange('DAILY')}
+                      className={`w-full px-6 py-3 text-left hover:bg-[#2C2621]/10 transition-colors duration-200 ${
+                        isDaily ? 'bg-[#2C2621]/5' : ''
+                      }`}
+                    >
+                      <div className="font-sans text-sm font-bold uppercase tracking-wide text-[#2C2621]">
+                        {t.dailyRental}
+                      </div>
+                      <div className="font-mono text-xs text-[#2C2621]/60">
+                        {t.shortTerm}
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => handleRentalTypeChange('MONTHLY')}
+                      className={`w-full px-6 py-3 text-left hover:bg-[#2C2621]/10 transition-colors duration-200 border-t border-[#2C2621]/20 ${
+                        !isDaily ? 'bg-[#2C2621]/5' : ''
+                      }`}
+                    >
+                      <div className="font-sans text-sm font-bold uppercase tracking-wide text-[#2C2621]">
+                        {t.monthlyRental}
+                      </div>
+                      <div className="font-mono text-xs text-[#2C2621]/60">
+                        {t.mediumTerm}
+                      </div>
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
             
             {/* Volver Button */}
             <a 
@@ -349,25 +374,27 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
 
               {/* Check-in/out */}
               <div className="space-y-3 mb-4 sm:mb-6">
-                <div className="grid grid-cols-2 gap-3">
+                <div className={`grid ${isDaily ? 'grid-cols-2' : 'grid-cols-1'} gap-3`}>
                   <div className="border-2 border-[#2C2621]/30 p-3 rounded">
                     <label className="font-mono text-xs text-[#2C2621]/60 uppercase tracking-wide block mb-1">
-                      {t.checkIn}
+                      {isDaily ? t.checkIn : (language === 'es' ? 'Fecha de inicio' : 'Start date')}
                     </label>
                     <input 
                       type="date"
                       className="w-full bg-transparent font-mono text-sm text-[#2C2621] focus:outline-none"
                     />
                   </div>
-                  <div className="border-2 border-[#2C2621]/30 p-3 rounded">
-                    <label className="font-mono text-xs text-[#2C2621]/60 uppercase tracking-wide block mb-1">
-                      {t.checkOut}
-                    </label>
-                    <input 
-                      type="date"
-                      className="w-full bg-transparent font-mono text-sm text-[#2C2621] focus:outline-none"
-                    />
-                  </div>
+                  {isDaily && (
+                    <div className="border-2 border-[#2C2621]/30 p-3 rounded">
+                      <label className="font-mono text-xs text-[#2C2621]/60 uppercase tracking-wide block mb-1">
+                        {t.checkOut}
+                      </label>
+                      <input 
+                        type="date"
+                        className="w-full bg-transparent font-mono text-sm text-[#2C2621] focus:outline-none"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {/* Static guest info */}
@@ -423,7 +450,10 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
               </div>
 
               {/* Reserve Button */}
-              <button className="w-full rounded-none border-2 border-[#3B332B] px-4 sm:px-6 py-2 sm:py-3 font-sans font-bold uppercase tracking-widest text-xs sm:text-sm transition-all duration-300 bg-[#3B332B] text-white hover:bg-transparent hover:text-[#3B332B] mb-3">
+              <button 
+                onClick={scrollToContactForm}
+                className="w-full rounded-none border-2 border-[#3B332B] px-4 sm:px-6 py-2 sm:py-3 font-sans font-bold uppercase tracking-widest text-xs sm:text-sm transition-all duration-300 bg-[#3B332B] text-white hover:bg-transparent hover:text-[#3B332B] mb-3"
+              >
                 {t.reserveNow}
               </button>
 
@@ -455,34 +485,23 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
           <div className="lg:col-span-2 space-y-6 sm:space-y-8">
             {/* Características */}
-            <div>
-              <h2 className="font-sans text-xl sm:text-2xl font-bold text-[#2C2621] uppercase tracking-tight mb-4 sm:mb-6 border-b-2 border-[#2C2621]/20 pb-3 sm:pb-4">
-                {t.ourHouse}
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {property.amenities.length > 0 ? (
-                  property.amenities.map((amenity: any) => (
+            {property.amenities && property.amenities.length > 0 && (
+              <div>
+                <h2 className="font-sans text-xl sm:text-2xl font-bold text-[#2C2621] uppercase tracking-tight mb-4 sm:mb-6 border-b-2 border-[#2C2621]/20 pb-3 sm:pb-4">
+                  {t.ourHouse}
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {property.amenities.map((amenity: any) => (
                     <div key={amenity.id} className="flex items-center gap-3 bg-white p-4 rounded-lg border border-[#2C2621]/10">
                       <div className="w-2 h-2 bg-[#2C2621] rounded-full flex-shrink-0"></div>
                       <span className="font-mono text-sm text-[#2C2621] uppercase tracking-wide">
                         {amenity.name}
                       </span>
                     </div>
-                  ))
-                ) : (
-                  <>
-                    <div className="flex items-center gap-3 bg-white p-4 rounded-lg border border-[#2C2621]/10">
-                      <div className="w-2 h-2 bg-[#2C2621] rounded-full flex-shrink-0"></div>
-                      <span className="font-mono text-sm text-[#2C2621] uppercase tracking-wide">3 Habitaciones</span>
-                    </div>
-                    <div className="flex items-center gap-3 bg-white p-4 rounded-lg border border-[#2C2621]/10">
-                      <div className="w-2 h-2 bg-[#2C2621] rounded-full flex-shrink-0"></div>
-                      <span className="font-mono text-sm text-[#2C2621] uppercase tracking-wide">2 Baños</span>
-                    </div>
-                   </>
-                )}
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Description */}
             {property.description && (
@@ -519,7 +538,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                       <circle cx="12" cy="10" r="3"></circle>
                     </svg>
                     <a 
-                      href={embedMapUrl || property.mapUrl || 'https://www.google.com/maps/place/Pisco,Peru'} 
+                      href={property.mapUrl} 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="font-mono text-sm text-[#2C2621] hover:underline uppercase tracking-wide"
@@ -533,7 +552,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
           </div>
 
           {/* Contact Form on the Right */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1" id="contact-form-section">
             <div className="bg-white border-2 border-[#2C2621]/20 p-4 sm:p-6 rounded-lg shadow-lg">
               <h3 className="font-sans text-lg sm:text-xl font-bold text-[#2C2621] uppercase tracking-tight mb-4 sm:mb-6">
                 {t.requestInfo}

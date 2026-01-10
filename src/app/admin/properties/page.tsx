@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import QRModal from '@/components/admin/QRModal'
 
 interface Property {
   id: string
   title: string
+  slug?: string
   price: number
   status: string
   imageUrl: string | null
@@ -14,6 +16,11 @@ interface Property {
 export default function AdminProperties() {
   const [properties, setProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
+  const [qrModal, setQrModal] = useState<{ isOpen: boolean; title: string; slug: string }>({
+    isOpen: false,
+    title: '',
+    slug: ''
+  })
 
   useEffect(() => {
     fetchProperties()
@@ -40,6 +47,14 @@ export default function AdminProperties() {
     } catch (error) {
       console.error('Error deleting property:', error)
     }
+  }
+
+  function openQRModal(property: Property) {
+    setQrModal({
+      isOpen: true,
+      title: property.title,
+      slug: property.slug || property.id
+    })
   }
 
   if (loading) {
@@ -85,7 +100,7 @@ export default function AdminProperties() {
                     />
                   </td>
                   <td className="px-3 sm:px-6 py-3 sm:py-4 font-sans text-sm sm:text-base font-bold text-[#2C2621]">{property.title}</td>
-                  <td className="px-3 sm:px-6 py-3 sm:py-4 font-mono text-xs sm:text-sm text-[#2C2621]">${property.price.toLocaleString()}</td>
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 font-mono text-xs sm:text-sm text-[#2C2621]">S/ {property.price.toLocaleString()}</td>
                   <td className="px-3 sm:px-6 py-3 sm:py-4">
                     <span className={`font-mono text-[10px] sm:text-xs uppercase px-2 sm:px-3 py-1 rounded-full ${
                       property.status === 'AVAILABLE' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
@@ -102,6 +117,12 @@ export default function AdminProperties() {
                         Editar
                       </Link>
                       <button 
+                        onClick={() => openQRModal(property)}
+                        className="font-mono text-xs sm:text-sm text-blue-600 underline hover:opacity-70"
+                      >
+                        Generar QR
+                      </button>
+                      <button 
                         onClick={() => deleteProperty(property.id)}
                         className="font-mono text-xs sm:text-sm text-red-600 underline hover:opacity-70"
                       >
@@ -115,6 +136,14 @@ export default function AdminProperties() {
           </table>
         </div>
       )}
+
+      {/* QR Modal */}
+      <QRModal
+        isOpen={qrModal.isOpen}
+        onClose={() => setQrModal({ ...qrModal, isOpen: false })}
+        propertyTitle={qrModal.title}
+        propertySlug={qrModal.slug}
+      />
     </div>
   )
 }

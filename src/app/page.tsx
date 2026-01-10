@@ -7,6 +7,10 @@ export const revalidate = 0;
 
 async function getProperties() {
   return await prisma.property.findMany({
+    include: {
+      amenities: true,
+      propertyImages: true
+    },
     orderBy: { createdAt: 'desc' },
   });
 }

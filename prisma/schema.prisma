@@ -1,56 +1,63 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
-  provider = "postgresql"
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
+// --- TUS MODELOS LIMPIOS Y BIEN DEFINIDOS ---
+
 model Property {
-  id            String         @id @default(uuid()) @map("id")
-  title         String         @map("title")
-  price         Float          @map("price")
-  pricePerMonth Float?         @map("pricePerMonth")
-  description   String?        @map("description")
-  imageUrl      String?        @map("imageUrl")
-  status        String         @default("AVAILABLE") @map("status")
-  rentalType    String         @default("DAILY") @map("rentalType")
-  maxGuests     Int?           @map("maxGuests")
-  bedrooms      Int?           @map("bedrooms")
-  bathrooms     Int?           @map("bathrooms")
-  address       String?        @map("address")
-  mapLat        Float?         @map("mapLat")
-  mapLng        Float?         @map("mapLng")
-  mapUrl        String?        @map("mapUrl")
-  whatsappNumber String?       @map("whatsappNumber")
-  amenities     Amenity[]
-  leads         Lead[]
+  id             String          @id @default(uuid()) @map("id")
+  title          String          @map("title")
+  slug           String          @unique @map("slug")
+  price          Float           @map("price")
+  pricePerMonth  Float?          @map("pricePerMonth")
+  description    String?         @map("description")
+  imageUrl       String?         @map("imageUrl")
+  status         String          @default("AVAILABLE") @map("status")
+  rentalType     String          @default("DAILY") @map("rentalType")
+  maxGuests      Int?            @map("maxGuests")
+  bedrooms       Int?            @map("bedrooms")
+  bathrooms      Int?            @map("bathrooms")
+  address        String?         @map("address")
+  mapLat         Float?          @map("mapLat")
+  mapLng         Float?          @map("mapLng")
+  mapUrl         String?         @map("mapUrl")
+  whatsappNumber String?         @map("whatsappNumber")
+  amenities      Amenity[]
+  leads          Lead[]
   propertyImages PropertyImage[]
-  createdAt     DateTime       @default(now()) @map("createdAt")
-  updatedAt     DateTime       @updatedAt @map("updatedAt")
+  createdAt      DateTime        @default(now()) @map("createdAt")
+  updatedAt      DateTime        @updatedAt @map("updatedAt")
 
   @@map("Property")
 }
 
 model Amenity {
-  id         String    @id @default(uuid()) @map("id")
-  name       String    @map("name")
-  properties Property[]
+  id         String   @id @default(uuid()) @map("id")
+  name       String   @map("name")
+  propertyId String   @map("propertyId")
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 
   @@map("Amenity")
 }
 
 model Lead {
-  id         String   @id @default(uuid()) @map("id")
-  propertyId String   @map("propertyId")
-  property   Property @relation(fields: [propertyId], references: [id])
-  name       String   @map("name")
-  email      String   @map("email")
-  phone      String?  @map("phone")
-  message    String?  @map("message")
+  id         String    @id @default(uuid()) @map("id")
+  propertyId String?   @map("propertyId")
+  property   Property? @relation(fields: [propertyId], references: [id])
+  name       String    @map("name")
+  email      String    @map("email")
+  phone      String?   @map("phone")
+  message    String?   @map("message")
   checkIn    DateTime? @map("checkIn")
   checkOut   DateTime? @map("checkOut")
-  createdAt  DateTime @default(now()) @map("createdAt")
+  createdAt  DateTime  @default(now()) @map("createdAt")
 
   @@map("Lead")
 }
@@ -64,75 +71,6 @@ model PropertyImage {
   createdAt  DateTime @default(now()) @map("createdAt")
 
   @@map("PropertyImage")
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model amenities {
-  id                 BigInt               @id @default(autoincrement())
-  name               String               @db.VarChar(50)
-  icon_key           String               @db.VarChar(50)
-  property_amenities property_amenities[]
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model leads {
-  id             BigInt       @id @default(autoincrement())
-  property_id    BigInt?
-  client_name    String       @db.VarChar(100)
-  client_email   String       @db.VarChar(100)
-  client_phone   String?      @db.VarChar(20)
-  check_in_date  DateTime?    @db.Date
-  check_out_date DateTime?    @db.Date
-  message        String?
-  status         lead_status? @default(NEW)
-  created_at     DateTime     @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
-  properties     properties?  @relation(fields: [property_id], references: [id], onUpdate: NoAction)
-}
-
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-model properties {
-  id                 BigInt               @id @default(autoincrement())
-  public_id          String               @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  title              String               @db.VarChar(150)
-  slug               String               @unique @db.VarChar(200)
-  description        String?
-  price_per_night    Decimal              @db.Decimal(10, 2)
-  currency           String?              @default("PEN") @db.VarChar(3)
-  max_capacity       Int?
-  rooms              Int?
-  bathrooms          Int?
-  area_m2            Decimal?             @db.Decimal(10, 2)
-  address            String?              @db.VarChar(255)
-  map_lat            Decimal?             @db.Decimal(10, 8)
-  map_lng            Decimal?             @db.Decimal(11, 8)
-  status             property_status?     @default(HIDDEN)
-  created_at         DateTime             @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
-  deleted_at         DateTime?            @db.Timestamptz(6)
-  leads              leads[]
-  property_amenities property_amenities[]
-  property_images    property_images[]
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model property_amenities {
-  property_id BigInt
-  amenity_id  BigInt
-  amenities   amenities  @relation(fields: [amenity_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  properties  properties @relation(fields: [property_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@id([property_id, amenity_id])
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model property_images {
-  id            BigInt     @id @default(autoincrement())
-  property_id   BigInt
-  image_url     String     @db.VarChar(500)
-  alt_text      String?    @db.VarChar(150)
-  display_order Int?       @default(0)
-  is_cover      Boolean?   @default(false)
-  created_at    DateTime?  @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
-  properties    properties @relation(fields: [property_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model HeroImage {
@@ -158,15 +96,5 @@ model AdminUser {
   @@map("AdminUser")
 }
 
-enum lead_status {
-  NEW
-  CONTACTED
-  CLOSED
-}
-
-enum property_status {
-  AVAILABLE
-  RENTED
-  MAINTENANCE
-  HIDDEN
-}
+// --- HE BORRADO LOS MODELOS DUPLICADOS (amenities, leads, properties, etc.) ---
+// --- PORQUE YA TIENES LOS DE ARRIBA MEJOR DEFINIDOS ---

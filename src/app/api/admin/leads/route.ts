@@ -37,6 +37,52 @@ export async function GET() {
   }
 }
 
+// POST: Crear un nuevo lead (público - sin autenticación)
+export async function POST(request: Request) {
+  try {
+    const body = await request.json()
+    const { name, email, phone, message, propertyId } = body
+
+    // Validaciones básicas - propertyId es opcional para mensajes generales
+    if (!name || !email || !message) {
+      return NextResponse.json(
+        { error: 'Nombre, email y mensaje son requeridos' },
+        { status: 400 }
+      )
+    }
+
+    // Si hay propertyId, verificar que la propiedad existe
+    if (propertyId) {
+      const property = await prisma.property.findUnique({
+        where: { id: propertyId }
+      })
+
+      if (!property) {
+        return NextResponse.json(
+          { error: 'Propiedad no encontrada' },
+          { status: 404 }
+        )
+      }
+    }
+
+    // Crear el lead
+    const lead = await prisma.lead.create({
+      data: {
+        name,
+        email,
+        phone: phone || null,
+        message,
+        propertyId: propertyId || null
+      }
+    })
+
+    return NextResponse.json(lead, { status: 201 })
+  } catch (error) {
+    console.error('Error al crear lead:', error)
+    return NextResponse.json({ error: 'Error al crear lead' }, { status: 500 })
+  }
+}
+
 // DELETE: Eliminar un lead
 export async function DELETE(request: Request) {
   try {

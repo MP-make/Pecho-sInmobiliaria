@@ -6,11 +6,22 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-async function getProperty(id: string) {
-  return await prisma.property.findUnique({
-    where: { id },
+async function getProperty(slug: string) {
+  // Primero intentar buscar por slug
+  let property = await prisma.property.findUnique({
+    where: { slug },
     include: { amenities: true, propertyImages: true },
   });
+
+  // Si no encuentra por slug, intentar por ID (para compatibilidad con URLs antiguas)
+  if (!property) {
+    property = await prisma.property.findUnique({
+      where: { id: slug },
+      include: { amenities: true, propertyImages: true },
+    });
+  }
+
+  return property;
 }
 
 export default async function PropertyDetail({ params }: PageProps) {
