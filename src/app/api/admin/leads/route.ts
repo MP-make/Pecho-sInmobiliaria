@@ -41,7 +41,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { name, email, phone, message, propertyId } = body
+    const { name, email, phone, message, propertyId, dni } = body
 
     // Validaciones básicas - propertyId es opcional para mensajes generales
     if (!name || !email || !message) {
@@ -72,7 +72,8 @@ export async function POST(request: Request) {
         email,
         phone: phone || null,
         message,
-        propertyId: propertyId || null
+        propertyId: propertyId || null,
+        dni: dni || null
       }
     })
 

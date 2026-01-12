@@ -63,11 +63,11 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
   useEffect(() => {
     // Verificar si vino desde nuestra página (no desde QR o enlace externo)
     const referrer = document.referrer;
-    const isFromOurSite = referrer && referrer.includes(window.location.hostname);
+    const isFromOurSite = !!(referrer && referrer.includes(window.location.hostname));
     const hasHistory = window.history.length > 1;
     
     // Solo mostrar "Volver" si vino desde nuestra página Y tiene historial
-    setCanGoBack(isFromOurSite && hasHistory);
+    setCanGoBack(!!(isFromOurSite && hasHistory));
   }, []);
 
   const translations = {

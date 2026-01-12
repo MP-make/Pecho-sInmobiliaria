@@ -35,9 +35,11 @@ export default function LeadModal({ propertyId, propertyTitle, isOpen, onClose }
         message: formData.message || undefined
       })
 
-      if (result.success && result.whatsappUrl) {
-        // Redirigir a WhatsApp
-        window.open(result.whatsappUrl, '_blank')
+      if (result.success) {
+        // Generar URL de WhatsApp y redirigir
+        const whatsappUrl = `https://wa.me/51${formData.phone}?text=${encodeURIComponent(`Hola, me interesa la propiedad: ${propertyTitle}`)}`
+        window.open(whatsappUrl, '_blank')
+        
         // Cerrar el modal después de un breve delay
         setTimeout(() => {
           onClose()

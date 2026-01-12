@@ -52,7 +52,7 @@ model Lead {
   propertyId String?   @map("propertyId")
   property   Property? @relation(fields: [propertyId], references: [id])
   name       String    @map("name")
-  dni        String    @map("dni")
+  dni        String?   @map("dni")
   email      String    @map("email")
   phone      String?   @map("phone")
   message    String?   @map("message")
