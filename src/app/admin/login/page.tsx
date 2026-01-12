@@ -55,9 +55,9 @@ export default function AdminLoginPage() {
     <div className="min-h-screen bg-[#F2EFE9] flex items-center justify-center px-4 py-8">
       <div className="max-w-md w-full">
         <div className="bg-white border-2 border-[#2C2621]/20 p-6 sm:p-8 rounded-lg shadow-2xl">
-          <div className="text-center mb-6 sm:mb-8">
-            <h1 className="font-sans text-2xl sm:text-3xl font-bold text-[#2C2621] uppercase tracking-tight mb-2">
-              Panel Admin
+          <div className="text-center mb-8">
+            <h1 className="font-sans text-3xl font-bold text-[#2C2621] uppercase tracking-tight mb-2">
+              Alquileres Pisco
             </h1>
             <p className="font-mono text-xs sm:text-sm text-[#2C2621]/60 uppercase tracking-wide">
               Inmobiliaria Pecho's

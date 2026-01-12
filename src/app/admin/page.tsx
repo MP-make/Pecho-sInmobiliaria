@@ -3,8 +3,8 @@ import Link from 'next/link'
 export default function AdminDashboard() {
   return (
     <div>
-      <h1 className="font-sans text-3xl sm:text-4xl font-bold text-[#2C2621] uppercase tracking-tight mb-4">
-        Dashboard
+      <h1 className="font-sans text-2xl sm:text-3xl font-bold text-[#2C2621] uppercase tracking-tight mb-2">
+        Panel de administración - Alquileres Pisco
       </h1>
       <p className="font-mono text-sm text-[#2C2621]/60 uppercase tracking-wide mb-8">
         Panel de administración - Inmobiliaria Pecho's

@@ -39,6 +39,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
   const [rentalType, setRentalType] = useState<'DAILY' | 'MONTHLY'>(getInitialRentalType());
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [language, setLanguage] = useState('es');
+  const [canGoBack, setCanGoBack] = useState(false);
 
   // Determinar si mostrar el dropdown de tipo de alquiler
   const showRentalTypeDropdown = property.rentalType === 'BOTH' || !property.rentalType;
@@ -56,6 +57,12 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
     const savedLanguage = localStorage.getItem('language') || 'es'
     setLanguage(savedLanguage)
   }, [])
+
+  // Verificar si el usuario puede volver (tiene historial de navegación)
+  useEffect(() => {
+    // Si hay más de una entrada en el historial, significa que navegó desde otra página
+    setCanGoBack(window.history.length > 1);
+  }, []);
 
   const translations = {
     es: {
@@ -270,12 +277,14 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
             )}
             
             {/* Volver Button */}
-            <a 
-              href="/" 
-              className="rounded-none border-2 border-[#3B332B] px-6 sm:px-8 py-3 text-xs sm:text-sm font-bold uppercase tracking-widest transition-all duration-300 bg-transparent text-[#3B332B] hover:bg-[#3B332B] hover:text-white whitespace-nowrap h-auto sm:h-[60px] flex items-center justify-center"
-            >
-              {t.back}
-            </a>
+            {canGoBack && (
+              <a 
+                href="/" 
+                className="rounded-none border-2 border-[#3B332B] px-6 sm:px-8 py-3 text-xs sm:text-sm font-bold uppercase tracking-widest transition-all duration-300 bg-transparent text-[#3B332B] hover:bg-[#3B332B] hover:text-white whitespace-nowrap h-auto sm:h-[60px] flex items-center justify-center"
+              >
+                {t.back}
+              </a>
+            )}
           </div>
         </div>
 

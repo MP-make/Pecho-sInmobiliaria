@@ -17,7 +17,7 @@ export default function Header({ language, onLanguageChange }: HeaderProps) {
       home: 'Inicio',
       properties: 'Propiedades',
       contact: 'Contacto',
-      brand: "Pecho's Inmobiliaria",
+      brand: "Alquileres Pisco",
       spanish: 'Español',
       english: 'English'
     },
@@ -25,7 +25,7 @@ export default function Header({ language, onLanguageChange }: HeaderProps) {
       home: 'Home',
       properties: 'Properties',
       contact: 'Contact',
-      brand: "Pecho's Real Estate",
+      brand: "Alquileres Pisco",
       spanish: 'Español',
       english: 'English'
     }

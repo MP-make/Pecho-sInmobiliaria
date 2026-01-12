@@ -13,12 +13,12 @@ const robotoMono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Pecho's Inmobiliaria - Alquiler de Casas en Pisco",
+  title: "Alquileres Pisco - Alquiler de Casas en Pisco, Perú",
   description: "Encuentra tu casa ideal en Pisco, Perú. Alquiler por días y meses.",
   icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon.ico',
-    apple: '/favicon.ico',
+    icon: '/Favicon-inmobiliaria.png',
+    shortcut: '/Favicon-inmobiliaria.png',
+    apple: '/Favicon-inmobiliaria.png',
   },
 };
 
